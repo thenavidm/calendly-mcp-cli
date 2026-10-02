@@ -1,0 +1,92 @@
+{
+  "manifest_version": "0.2",
+  "name": "calendly",
+  "display_name": "Calendly",
+  "version": "2.0.0",
+  "description": "Calendly API v2 MCP server with 66 tools for scheduling, contacts, custom fields, Notetaker recaps, transcripts, organizations and webhooks.",
+  "long_description": "44 reads and 22 confirmed writes. Booking/cancellation can notify participants. Requires current API scopes and account features. Private credentials never bundle.",
+  "author": {
+    "name": "Navid Moazzez",
+    "url": "https://navid.me"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thenavidm/calendly-mcp-cli"
+  },
+  "homepage": "https://github.com/thenavidm/calendly-mcp-cli",
+  "documentation": "https://github.com/thenavidm/calendly-mcp-cli/blob/main/INSTALL.md",
+  "support": "https://github.com/thenavidm/calendly-mcp-cli/issues",
+  "license": "AGPL-3.0-or-later",
+  "keywords": [
+    "calendly",
+    "scheduling",
+    "contacts",
+    "notetaker",
+    "webhooks",
+    "mcp",
+    "cli",
+    "claude-desktop"
+  ],
+  "server": {
+    "type": "node",
+    "entry_point": "server/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/server/index.js"
+      ],
+      "env": {
+        "CALENDLY_API_TOKEN": "${user_config.api_token}",
+        "CALENDLY_TOKEN_FILE": "${user_config.token_file}",
+        "CALENDLY_TOKENS_FILE": "${user_config.tokens_file}",
+        "CALENDLY_READ_ONLY": "${user_config.read_only}",
+        "CALENDLY_ALLOW_DESTRUCTIVE": "${user_config.allow_destructive}"
+      }
+    }
+  },
+  "user_config": {
+    "api_token": {
+      "type": "string",
+      "title": "Private Calendly PAT",
+      "description": "Scoped Personal Access Token; leave empty when using a file. Never paste into chat.",
+      "required": false,
+      "sensitive": true
+    },
+    "token_file": {
+      "type": "string",
+      "title": "Private PAT text file",
+      "description": "Absolute owner-only regular token-only file, max 64 KB. Leave empty for OAuth.",
+      "required": false
+    },
+    "tokens_file": {
+      "type": "string",
+      "title": "Private REST OAuth JSON file",
+      "description": "Existing authorized grant in an owner-only regular file, max 64 KB. Writable parent directory required for single-use rotation; no PAT mixing.",
+      "required": false
+    },
+    "read_only": {
+      "type": "boolean",
+      "title": "Read only",
+      "description": "Hide/refuse all 22 writes, leaving 44 reads.",
+      "default": false,
+      "required": false
+    },
+    "allow_destructive": {
+      "type": "boolean",
+      "title": "Allow confirmed writes",
+      "description": "If disabled refuse all 22 writes even when confirmed.",
+      "default": true,
+      "required": false
+    }
+  },
+  "compatibility": {
+    "platforms": [
+      "darwin",
+      "win32",
+      "linux"
+    ],
+    "runtimes": {
+      "node": ">=22"
+    }
+  }
+}

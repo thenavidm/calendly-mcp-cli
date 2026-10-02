@@ -1,0 +1,4812 @@
+[
+  {
+    "name": "list_activity_log",
+    "title": "List activity log entries",
+    "description": "List activity log entries. Reads Calendly data. Supports bounded opaque page_token retrieval. Required scopes: activity_log:read.",
+    "method": "GET",
+    "path": "/activity_log_entries",
+    "group": "activity_log",
+    "risk": "read",
+    "params": [
+      {
+        "name": "organization",
+        "in": "query",
+        "description": "Return activity log entries from the organization associated with this URI",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Return activity log entries from the organization associated with this URI"
+        },
+        "key": "organization"
+      },
+      {
+        "name": "search_term",
+        "in": "query",
+        "description": "Filters entries based on the search term.\n\nSupported operators:\n  - `|` - to allow filtering by one term or another. Example: `this | that`\n  - `+` - to allow filtering by one term and another. Example: `this + that`\n  - `\"` - to allow filtering by an exact search term. Example: `\"email@website.com\"`\n  - `-` - to omit specific terms from results. Example: `Added -User`\n  - `()` - to allow specifying precedence during a search. Example: `(this + that) OR (person + place)`\n  - `*` - to allow prefix searching. Example `*@other-website.com`\n",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "Filters entries based on the search term.\n\nSupported operators:\n  - `|` - to allow filtering by one term or another. Example: `this | that`\n  - `+` - to allow filtering by one term and another. Example: `this + that`\n  - `\"` - to allow filtering by an exact search term. Example: `\"email@website.com\"`\n  - `-` - to omit specific terms from results. Example: `Added -User`\n  - `()` - to allow specifying precedence during a search. Example: `(this + that) OR (person + place)`\n  - `*` - to allow prefix searching. Example `*@other-website.com`\n"
+        },
+        "key": "search_term"
+      },
+      {
+        "name": "actor",
+        "in": "query",
+        "description": "Return entries from the user(s) associated with the provided URIs",
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          },
+          "description": "Return entries from the user(s) associated with the provided URIs"
+        },
+        "key": "actor"
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "description": "Order results by the specified field and direction. List of {field}:{direction} values.",
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "action:asc",
+              "action:desc",
+              "actor.display_name:asc",
+              "actor.display_name:desc",
+              "actor.uri:asc",
+              "actor.uri:desc",
+              "namespace:asc",
+              "namespace:desc",
+              "occurred_at:asc",
+              "occurred_at:desc"
+            ],
+            "title": "ActivityLogEntriesGetParametersSortSchemaItems"
+          },
+          "default": [
+            "occurred_at:desc"
+          ],
+          "description": "Order results by the specified field and direction. List of {field}:{direction} values."
+        },
+        "key": "sort"
+      },
+      {
+        "name": "min_occurred_at",
+        "in": "query",
+        "description": "Include entries that occurred after this time (sample time format: \"2020-01-02T03:04:05.678Z\"). This time should use the UTC timezone.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Include entries that occurred after this time (sample time format: \"2020-01-02T03:04:05.678Z\"). This time should use the UTC timezone."
+        },
+        "key": "min_occurred_at"
+      },
+      {
+        "name": "max_occurred_at",
+        "in": "query",
+        "description": "Include entries that occurred prior to this time (sample time format: \"2020-01-02T03:04:05.678Z\"). This time should use the UTC timezone.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Include entries that occurred prior to this time (sample time format: \"2020-01-02T03:04:05.678Z\"). This time should use the UTC timezone."
+        },
+        "key": "max_occurred_at"
+      },
+      {
+        "name": "page_token",
+        "in": "query",
+        "description": "The token to pass to get the next portion of the collection",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "The token to pass to get the next portion of the collection"
+        },
+        "key": "page_token"
+      },
+      {
+        "name": "count",
+        "in": "query",
+        "description": "The number of rows to return",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20,
+          "description": "The number of rows to return"
+        },
+        "key": "count"
+      },
+      {
+        "name": "namespace",
+        "in": "query",
+        "description": "The categories of the entries",
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The categories of the entries"
+        },
+        "key": "namespace"
+      },
+      {
+        "name": "action",
+        "in": "query",
+        "description": "The action(s) associated with the entries",
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The action(s) associated with the entries"
+        },
+        "key": "action"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": true,
+    "scope": [
+      "activity_log:read"
+    ],
+    "upstreamOperationId": "activityLog_list-activity-log-entries"
+  },
+  {
+    "name": "get_availability_schedule",
+    "title": "Get User Availability Schedule",
+    "description": "Get User Availability Schedule. Reads Calendly data. Required scopes: availability:read.",
+    "method": "GET",
+    "path": "/user_availability_schedules/{uuid}",
+    "group": "availability",
+    "risk": "read",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "description": "The UUID of the availability schedule.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "The UUID of the availability schedule.",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "schedule_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "availability:read"
+    ],
+    "upstreamOperationId": "availability_get-user-availability-schedule"
+  },
+  {
+    "name": "list_event_type_availability_schedules",
+    "title": "List Event Type Availability Schedules",
+    "description": "List Event Type Availability Schedules. Reads Calendly data. Required scopes: availability:read.",
+    "method": "GET",
+    "path": "/event_type_availability_schedules",
+    "group": "availability",
+    "risk": "read",
+    "params": [
+      {
+        "name": "event_type",
+        "in": "query",
+        "description": "The URI associated with the event type",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "The URI associated with the event type"
+        },
+        "key": "event_type"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "availability:read"
+    ],
+    "upstreamOperationId": "availability_get-event-type-availability"
+  },
+  {
+    "name": "update_event_type_availability_schedules",
+    "title": "Update Event Type Availability Schedules",
+    "description": "Update Event Type Availability Schedules. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: availability:write.",
+    "method": "PATCH",
+    "path": "/event_type_availability_schedules",
+    "group": "availability",
+    "risk": "destructive",
+    "params": [
+      {
+        "name": "event_type",
+        "in": "query",
+        "description": "Event Type uri in which to update the availability schedule",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Event Type uri in which to update the availability schedule"
+        },
+        "key": "event_type"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {
+        "availability_rule": {
+          "type": "object",
+          "properties": {
+            "timezone": {
+              "type": "string",
+              "description": "The timezone for which this Event Type Availability Schedule is originated in."
+            },
+            "rules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "wday",
+                      "date"
+                    ],
+                    "description": "The type of this Availability Rule; can be \"wday\" or a specific \"date\".",
+                    "title": "AvailabilityRuleType"
+                  },
+                  "intervals": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "from": {
+                          "type": "string",
+                          "pattern": "(\\d\\d):(\\d\\d)",
+                          "description": "Format: `\"hh:mm\"`"
+                        },
+                        "to": {
+                          "type": "string",
+                          "pattern": "(\\d\\d):(\\d\\d)",
+                          "description": "Format: `\"hh:mm\"`"
+                        }
+                      },
+                      "title": "AvailabilityRuleIntervalsItems"
+                    },
+                    "description": "The intervals to be applied to this Rule. Each interval represents when booking a meeting is allowed. If the interval array is empty, then there is no booking availability for that day. Time is in 24h format (i.e. \"17:30\") and local to the timezone in the Availability Schedule."
+                  },
+                  "wday": {
+                    "type": "string",
+                    "enum": [
+                      "sunday",
+                      "monday",
+                      "tuesday",
+                      "wednesday",
+                      "thursday",
+                      "friday",
+                      "saturday"
+                    ],
+                    "description": "The day of the week for which this Rule should be applied to.",
+                    "title": "AvailabilityRuleWday"
+                  },
+                  "date": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$",
+                    "description": "A specific date in the future that this should be applied to (i.e. \"2030-12-31\")."
+                  }
+                },
+                "required": [
+                  "type",
+                  "intervals"
+                ],
+                "description": "The rules for an availability schedule.",
+                "title": "AvailabilityRule"
+              },
+              "description": "The rules for an availability schedule.<br>  <span style=\"color:red\">Warning: </span>Updating rules will overwrite all existing rules for the event type. Use the GET endpoint to first retrieve the existing rules and then pass the modified rules to the rules object."
+            },
+            "user": {
+              "type": "string",
+              "format": "uri",
+              "description": "Required when an admin or org owner is making the call to update a specific users availability schedule"
+            }
+          },
+          "required": [
+            "timezone"
+          ],
+          "title": "EventTypeAvailabilitySchedulesPatchRequestBodyContentApplicationJsonSchemaAvailabilityRule"
+        },
+        "availability_setting": {
+          "type": "string",
+          "enum": [
+            "host"
+          ],
+          "default": "host",
+          "description": "By default every host on the Event Type shares an identical schedule.",
+          "title": "EventTypeAvailabilitySchedulesPatchRequestBodyContentApplicationJsonSchemaAvailabilitySetting"
+        }
+      },
+      "required": [
+        "availability_rule"
+      ],
+      "additionalProperties": false
+    },
+    "bodyRequired": true,
+    "paginated": false,
+    "scope": [
+      "availability:write"
+    ],
+    "upstreamOperationId": "availability_update-event-type-availability"
+  },
+  {
+    "name": "list_availability_schedules",
+    "title": "List User Availability Schedules",
+    "description": "List User Availability Schedules. Reads Calendly data. Required scopes: availability:read.",
+    "method": "GET",
+    "path": "/user_availability_schedules",
+    "group": "availability",
+    "risk": "read",
+    "params": [
+      {
+        "name": "user",
+        "in": "query",
+        "description": "A URI reference to a user",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "A URI reference to a user"
+        },
+        "key": "user"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "availability:read"
+    ],
+    "upstreamOperationId": "availability_list-user-availability-schedules"
+  },
+  {
+    "name": "list_user_busy_times",
+    "title": "List User Busy Times",
+    "description": "List User Busy Times. Reads Calendly data. Required scopes: availability:read.",
+    "method": "GET",
+    "path": "/user_busy_times",
+    "group": "availability",
+    "risk": "read",
+    "params": [
+      {
+        "name": "user",
+        "in": "query",
+        "description": "The uri associated with the user",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "The uri associated with the user"
+        },
+        "key": "user"
+      },
+      {
+        "name": "start_time",
+        "in": "query",
+        "description": "Start time of the requested availability range. Date cannot be in the past.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "Start time of the requested availability range. Date cannot be in the past."
+        },
+        "key": "start_time"
+      },
+      {
+        "name": "end_time",
+        "in": "query",
+        "description": "End time of the requested availability range. Date must be in the future of start_time.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "End time of the requested availability range. Date must be in the future of start_time."
+        },
+        "key": "end_time"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "availability:read"
+    ],
+    "upstreamOperationId": "availability_list-user-busy-times"
+  },
+  {
+    "name": "create_contact",
+    "title": "Create Contact",
+    "description": "Create Contact. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: contacts:write.",
+    "method": "POST",
+    "path": "/contacts",
+    "group": "contacts",
+    "risk": "destructive",
+    "params": [],
+    "bodySchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "emails": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "Email address."
+              },
+              "is_primary": {
+                "type": "boolean",
+                "description": "Whether this is the primary email."
+              }
+            },
+            "required": [
+              "email",
+              "is_primary"
+            ],
+            "description": "An email address for a contact. Exactly one entry in the emails array must have is_primary true.",
+            "title": "Email"
+          },
+          "description": "The user's email addresses. Max 10.",
+          "maxItems": 10,
+          "minItems": 1
+        },
+        "phone_numbers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "phone_number": {
+                "type": "string",
+                "description": "Phone number."
+              }
+            },
+            "required": [
+              "phone_number"
+            ],
+            "description": "A phone number associated with a contact.",
+            "title": "PhoneNumber"
+          },
+          "description": "The user's phone numbers. Max 10.",
+          "maxItems": 10
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "job_title": {
+          "type": "string"
+        },
+        "company": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "linkedin": {
+          "type": "string",
+          "format": "uri"
+        },
+        "custom_fields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uuid": {
+                "type": "string",
+                "description": "Unique identifier of the custom field definition."
+              },
+              "value": {
+                "oneOf": [
+                  {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    ],
+                    "description": "The custom field value; the accepted type is set by the field definition's `field_type`. `text` and `single_select` take a string (`single_select` must equal one of the definition's option `uuid`s); `number` takes a number; `boolean` takes a boolean; `currency` takes an integer amount in the currency's minor units (the ISO currency code lives on the field definition, not on this entry); `date` takes a string in ISO 8601 date format (`YYYY-MM-DD`); `tags` takes an array of strings. Scalar fields reject array values, and `tags` rejects non-array values.",
+                    "title": "ContactsPostRequestBodyContentApplicationJsonSchemaCustomFieldsItemsValue"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "The custom field value; the accepted type is set by the field definition's `field_type`. `text` and `single_select` take a string (`single_select` must equal one of the definition's option `uuid`s); `number` takes a number; `boolean` takes a boolean; `currency` takes an integer amount in the currency's minor units (the ISO currency code lives on the field definition, not on this entry); `date` takes a string in ISO 8601 date format (`YYYY-MM-DD`); `tags` takes an array of strings. Scalar fields reject array values, and `tags` rejects non-array values."
+              }
+            },
+            "required": [
+              "uuid",
+              "value"
+            ],
+            "title": "ContactsPostRequestBodyContentApplicationJsonSchemaCustomFieldsItems"
+          },
+          "description": "Custom field values to set on the contact. Each item requires a `uuid` (the custom field definition identifier) and a `value`; any other keys (such as `label`) are ignored. The entire request is rejected if any `uuid` is unknown, any `value` is the wrong type for its field (including an array for a scalar field or a scalar for an array field), or any `single_select` `value` is not one of the field definition's option `uuid`s."
+        }
+      },
+      "required": [
+        "name",
+        "emails"
+      ],
+      "additionalProperties": false
+    },
+    "bodyRequired": true,
+    "paginated": false,
+    "scope": [
+      "contacts:write"
+    ],
+    "upstreamOperationId": "contacts_create-contact"
+  },
+  {
+    "name": "list_contacts",
+    "title": "List Contacts",
+    "description": "List Contacts. Reads Calendly data. Supports bounded opaque page_token retrieval. Required scopes: contacts:read.",
+    "method": "GET",
+    "path": "/contacts",
+    "group": "contacts",
+    "risk": "read",
+    "params": [
+      {
+        "name": "sort",
+        "in": "query",
+        "description": "Order results by the specified field and direction. Accepts comma-separated list of {field}:{direction} values. Supported fields are: created_at, updated_at. Sort direction is specified as: asc, desc.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Order results by the specified field and direction. Accepts comma-separated list of {field}:{direction} values. Supported fields are: created_at, updated_at. Sort direction is specified as: asc, desc."
+        },
+        "key": "sort"
+      },
+      {
+        "name": "email",
+        "in": "query",
+        "description": "Filter results by exact match on email address. Accepts a comma-separated list.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Filter results by exact match on email address. Accepts a comma-separated list."
+        },
+        "key": "email"
+      },
+      {
+        "name": "phone_number",
+        "in": "query",
+        "description": "Filter results by exact match on phone number. Accepts a comma-separated list.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Filter results by exact match on phone number. Accepts a comma-separated list."
+        },
+        "key": "phone_number"
+      },
+      {
+        "name": "timezone",
+        "in": "query",
+        "description": "Filter results by exact match on the IANA time zone name(s). Accepts a comma-separated list of time zones.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Filter results by exact match on the IANA time zone name(s). Accepts a comma-separated list of time zones."
+        },
+        "key": "timezone"
+      },
+      {
+        "name": "name",
+        "in": "query",
+        "description": "Filter results by partial match on name(s). Accepts a comma-separated list-- each segment is matched independently (commas in the query string separate values).",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Filter results by partial match on name(s). Accepts a comma-separated list-- each segment is matched independently (commas in the query string separate values)."
+        },
+        "key": "name"
+      },
+      {
+        "name": "job_title",
+        "in": "query",
+        "description": "Filter results by partial match on job title(s). Accepts a comma-separated list-- each segment is matched independently (commas in the query string separate values).",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Filter results by partial match on job title(s). Accepts a comma-separated list-- each segment is matched independently (commas in the query string separate values)."
+        },
+        "key": "job_title"
+      },
+      {
+        "name": "company",
+        "in": "query",
+        "description": "Filter results by partial match on company name(s). Accepts a comma-separated list-- each segment is matched independently (commas in the query string separate values).",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Filter results by partial match on company name(s). Accepts a comma-separated list-- each segment is matched independently (commas in the query string separate values)."
+        },
+        "key": "company"
+      },
+      {
+        "name": "country",
+        "in": "query",
+        "description": "Filter results by exact match on two-letter country code (ISO 3166-1 alpha-2). Accepts a comma-separated list.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Filter results by exact match on two-letter country code (ISO 3166-1 alpha-2). Accepts a comma-separated list."
+        },
+        "key": "country"
+      },
+      {
+        "name": "state",
+        "in": "query",
+        "description": "Filter results by exact match on state(s), province(s), or region(s). Accepts a comma-separated list of values.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Filter results by exact match on state(s), province(s), or region(s). Accepts a comma-separated list of values."
+        },
+        "key": "state"
+      },
+      {
+        "name": "city",
+        "in": "query",
+        "description": "Filter results by partial match on city(ies). Accepts a comma-separated list-- each segment is matched independently (commas in the query string separate values).",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Filter results by partial match on city(ies). Accepts a comma-separated list-- each segment is matched independently (commas in the query string separate values)."
+        },
+        "key": "city"
+      },
+      {
+        "name": "count",
+        "in": "query",
+        "description": "The number of rows to return",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20,
+          "description": "The number of rows to return"
+        },
+        "key": "count"
+      },
+      {
+        "name": "page_token",
+        "in": "query",
+        "description": "The token to pass to get the next or previous portion of the collection",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "The token to pass to get the next or previous portion of the collection"
+        },
+        "key": "page_token"
+      },
+      {
+        "name": "exclude",
+        "in": "query",
+        "description": "Omit the listed fields from the response. Currently only `custom_fields` is supported. When omitted, all fields are returned.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Omit the listed fields from the response. Currently only `custom_fields` is supported. When omitted, all fields are returned."
+        },
+        "key": "exclude"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": true,
+    "scope": [
+      "contacts:read"
+    ],
+    "upstreamOperationId": "contacts_list-contacts"
+  },
+  {
+    "name": "delete_contact",
+    "title": "Delete Contact",
+    "description": "Delete Contact. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: contacts:write.",
+    "method": "DELETE",
+    "path": "/contacts/{uuid}",
+    "group": "contacts",
+    "risk": "destructive",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "contact_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "contacts:write"
+    ],
+    "upstreamOperationId": "contacts_delete-contacts-uuid"
+  },
+  {
+    "name": "get_contact",
+    "title": "Get Contact",
+    "description": "Get Contact. Reads Calendly data. Required scopes: contacts:read.",
+    "method": "GET",
+    "path": "/contacts/{uuid}",
+    "group": "contacts",
+    "risk": "read",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "contact_uuid"
+      },
+      {
+        "name": "exclude",
+        "in": "query",
+        "description": "Omit the listed fields from the response. Currently only `custom_fields` is supported. When omitted, all fields are returned.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Omit the listed fields from the response. Currently only `custom_fields` is supported. When omitted, all fields are returned."
+        },
+        "key": "exclude"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "contacts:read"
+    ],
+    "upstreamOperationId": "contacts_get-contact"
+  },
+  {
+    "name": "update_contact",
+    "title": "Update Contact",
+    "description": "Update Contact. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: contacts:write.",
+    "method": "PATCH",
+    "path": "/contacts/{uuid}",
+    "group": "contacts",
+    "risk": "destructive",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "contact_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "emails": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "Email address."
+              },
+              "is_primary": {
+                "type": "boolean",
+                "description": "Whether this is the primary email."
+              }
+            },
+            "required": [
+              "email",
+              "is_primary"
+            ],
+            "description": "An email address for a contact. Exactly one entry in the emails array must have is_primary true.",
+            "title": "Email"
+          },
+          "description": "The user's email addresses. Max 10. <br>  <span style=\"color:red\">Warning: </span>Updating emails will overwrite all existing emails for the contact. Use the GET endpoint to first retrieve the existing emails and then pass the modified emails to the emails array.",
+          "maxItems": 10,
+          "minItems": 1
+        },
+        "phone_numbers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "phone_number": {
+                "type": "string",
+                "description": "Phone number."
+              }
+            },
+            "required": [
+              "phone_number"
+            ],
+            "description": "A phone number associated with a contact.",
+            "title": "PhoneNumber"
+          },
+          "description": "The user's phone numbers. Max 10. <br>  <span style=\"color:red\">Warning: </span>Updating phone_numbers will overwrite all existing phone numbers for the contact. Use the GET endpoint to first retrieve the existing phone numbers and then pass the modified phone_numbers to the phone_numbers array.",
+          "maxItems": 10
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "job_title": {
+          "type": "string"
+        },
+        "company": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "linkedin": {
+          "type": "string",
+          "format": "uri"
+        },
+        "custom_fields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uuid": {
+                "type": "string",
+                "description": "Unique identifier of the custom field definition."
+              },
+              "value": {
+                "oneOf": [
+                  {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    ],
+                    "description": "The custom field value; the accepted type is set by the field definition's `field_type`. `text` and `single_select` take a string (`single_select` must equal one of the definition's option `uuid`s); `number` takes a number; `boolean` takes a boolean; `currency` takes an integer amount in the currency's minor units (the ISO currency code lives on the field definition, not on this entry); `date` takes a string in ISO 8601 date format (`YYYY-MM-DD`); `tags` takes an array of strings. Scalar fields reject array values, and `tags` rejects non-array values.",
+                    "title": "ContactsUuidPatchRequestBodyContentApplicationJsonSchemaCustomFieldsItemsValue"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "The custom field value; the accepted type is set by the field definition's `field_type`. `text` and `single_select` take a string (`single_select` must equal one of the definition's option `uuid`s); `number` takes a number; `boolean` takes a boolean; `currency` takes an integer amount in the currency's minor units (the ISO currency code lives on the field definition, not on this entry); `date` takes a string in ISO 8601 date format (`YYYY-MM-DD`); `tags` takes an array of strings. Scalar fields reject array values, and `tags` rejects non-array values."
+              }
+            },
+            "required": [
+              "uuid",
+              "value"
+            ],
+            "title": "ContactsUuidPatchRequestBodyContentApplicationJsonSchemaCustomFieldsItems"
+          },
+          "description": "Custom field values to set on the contact. Each item requires a `uuid` (the custom field definition identifier) and a `value`; any other keys (such as `label`) are ignored. The entire request is rejected if any `uuid` is unknown, any `value` is the wrong type for its field (including an array for a scalar field or a scalar for an array field), or any `single_select` `value` is not one of the field definition's option `uuid`s."
+        }
+      },
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "contacts:write"
+    ],
+    "upstreamOperationId": "contacts_patch-contacts-uuid"
+  },
+  {
+    "name": "get_contact_custom_field_definition",
+    "title": "Get Contact Custom Field Definition",
+    "description": "Get Contact Custom Field Definition. Reads Calendly data. Required scopes: contacts:read.",
+    "method": "GET",
+    "path": "/contacts/custom_field_definitions/{uuid}",
+    "group": "contacts",
+    "risk": "read",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "definition_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "contacts:read"
+    ],
+    "upstreamOperationId": "contacts_get-contact-custom-field-definition"
+  },
+  {
+    "name": "list_contact_custom_field_definitions",
+    "title": "List Contact Custom Field Definitions",
+    "description": "List Contact Custom Field Definitions. Reads Calendly data. Required scopes: contacts:read.",
+    "method": "GET",
+    "path": "/contacts/custom_field_definitions",
+    "group": "contacts",
+    "risk": "read",
+    "params": [],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "contacts:read"
+    ],
+    "upstreamOperationId": "contacts_list-contact-custom-field-definitions"
+  },
+  {
+    "name": "delete_invitee_data",
+    "title": "Delete Invitee Data",
+    "description": "Delete Invitee Data. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: data_compliance:write.",
+    "method": "POST",
+    "path": "/data_compliance/deletion/invitees",
+    "group": "data_compliance",
+    "risk": "destructive",
+    "params": [],
+    "bodySchema": {
+      "type": "object",
+      "properties": {
+        "emails": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      },
+      "required": [
+        "emails"
+      ],
+      "additionalProperties": false
+    },
+    "bodyRequired": true,
+    "paginated": false,
+    "scope": [
+      "data_compliance:write"
+    ],
+    "upstreamOperationId": "dataCompliance_delete-invitee-data"
+  },
+  {
+    "name": "delete_scheduled_event_data",
+    "title": "Delete Scheduled Event Data",
+    "description": "Delete Scheduled Event Data. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: data_compliance:write.",
+    "method": "POST",
+    "path": "/data_compliance/deletion/events",
+    "group": "data_compliance",
+    "risk": "destructive",
+    "params": [],
+    "bodySchema": {
+      "type": "object",
+      "properties": {
+        "start_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The scheduled events UTC timestamp at which data deletion should begin."
+        },
+        "end_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The scheduled events UTC timestamp at which data deletion should end."
+        }
+      },
+      "required": [
+        "start_time",
+        "end_time"
+      ],
+      "additionalProperties": false
+    },
+    "bodyRequired": true,
+    "paginated": false,
+    "scope": [
+      "data_compliance:write"
+    ],
+    "upstreamOperationId": "dataCompliance_delete-scheduled-event-data"
+  },
+  {
+    "name": "create_event_type",
+    "title": "Create Event Type",
+    "description": "Create Event Type. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: event_types:write.",
+    "method": "POST",
+    "path": "/event_types",
+    "group": "event_types",
+    "risk": "destructive",
+    "params": [],
+    "bodySchema": {
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "boolean",
+          "default": false,
+          "description": "Indicates if the event type is active or not"
+        },
+        "owner": {
+          "type": "string",
+          "format": "uri",
+          "description": "The owner for this event type"
+        },
+        "name": {
+          "type": "string",
+          "description": "The event type name"
+        },
+        "description": {
+          "type": "string",
+          "description": "The event type description"
+        },
+        "duration": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 720,
+          "description": "The length of sessions booked with this event type. Must be one of the duration options if they're provided."
+        },
+        "duration_options": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "description": "A maximum of 4 unique options is allowed. Each option must be >= 1 and <= 720."
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "ask_invitee",
+                  "custom",
+                  "google_conference",
+                  "gotomeeting_conference",
+                  "inbound_call",
+                  "microsoft_teams_conference",
+                  "outbound_call",
+                  "physical",
+                  "webex_conference",
+                  "zoom_conference"
+                ],
+                "title": "LocationConfigurationKind"
+              },
+              "location": {
+                "type": "string"
+              },
+              "additional_info": {
+                "type": "string"
+              },
+              "phone_number": {
+                "type": "string"
+              }
+            },
+            "description": "A configuration for an EventType's location",
+            "title": "LocationConfiguration"
+          },
+          "description": "Configuration information for each possible location for this event type"
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[a-f\\d]{6}$",
+          "description": "The hexadecimal color value of the event type's scheduling page"
+        },
+        "locale": {
+          "type": "string",
+          "enum": [
+            "de",
+            "en",
+            "es",
+            "fr",
+            "it",
+            "nl",
+            "pt",
+            "uk"
+          ],
+          "description": "The locale on the event type, used to determine the language of the event type's scheduling page",
+          "title": "EventTypesPostRequestBodyContentApplicationJsonSchemaLocale"
+        }
+      },
+      "required": [
+        "owner",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "bodyRequired": true,
+    "paginated": false,
+    "scope": [
+      "event_types:write"
+    ],
+    "upstreamOperationId": "eventTypes_create-event-type"
+  },
+  {
+    "name": "list_event_types",
+    "title": "List User's Event Types",
+    "description": "List User's Event Types. Reads Calendly data. Supports bounded opaque page_token retrieval. Required scopes: event_types:read.",
+    "method": "GET",
+    "path": "/event_types",
+    "group": "event_types",
+    "risk": "read",
+    "params": [
+      {
+        "name": "active",
+        "in": "query",
+        "description": "Return only active event types if true, only inactive if false, or all event types if this parameter is omitted.",
+        "required": false,
+        "schema": {
+          "type": "boolean",
+          "description": "Return only active event types if true, only inactive if false, or all event types if this parameter is omitted."
+        },
+        "key": "active"
+      },
+      {
+        "name": "organization",
+        "in": "query",
+        "description": "View available personal, team, and organization event types associated with the organization's URI.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "View available personal, team, and organization event types associated with the organization's URI."
+        },
+        "key": "organization"
+      },
+      {
+        "name": "user",
+        "in": "query",
+        "description": "View available personal, team, and organization event types associated with the user's URI.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "View available personal, team, and organization event types associated with the user's URI."
+        },
+        "key": "user"
+      },
+      {
+        "name": "user_availability_schedule",
+        "in": "query",
+        "description": "Used in conjunction with `user` parameter, returns a filtered list of Event Types that use the given primary availability schedule.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Used in conjunction with `user` parameter, returns a filtered list of Event Types that use the given primary availability schedule."
+        },
+        "key": "user_availability_schedule"
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "description": "Order results by the specified field and direction. Accepts comma-separated list of {field}:{direction} values.Supported fields are: name, position, created_at, updated_at. Sort direction is specified as: asc, desc.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "default": "name:asc",
+          "description": "Order results by the specified field and direction. Accepts comma-separated list of {field}:{direction} values.Supported fields are: name, position, created_at, updated_at. Sort direction is specified as: asc, desc."
+        },
+        "key": "sort"
+      },
+      {
+        "name": "admin_managed",
+        "in": "query",
+        "description": "Return only admin managed event types if true, exclude admin managed event types if false, or include all event types if this parameter is omitted.",
+        "required": false,
+        "schema": {
+          "type": "boolean",
+          "description": "Return only admin managed event types if true, exclude admin managed event types if false, or include all event types if this parameter is omitted."
+        },
+        "key": "admin_managed"
+      },
+      {
+        "name": "page_token",
+        "in": "query",
+        "description": "The token to pass to get the next or previous portion of the collection",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "The token to pass to get the next or previous portion of the collection"
+        },
+        "key": "page_token"
+      },
+      {
+        "name": "count",
+        "in": "query",
+        "description": "The number of rows to return",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20,
+          "description": "The number of rows to return"
+        },
+        "key": "count"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": true,
+    "scope": [
+      "event_types:read"
+    ],
+    "upstreamOperationId": "eventTypes_list-event-types"
+  },
+  {
+    "name": "create_one_off_event_type",
+    "title": "Create One-Off Event Type",
+    "description": "Create One-Off Event Type. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: event_types:write.",
+    "method": "POST",
+    "path": "/one_off_event_types",
+    "group": "event_types",
+    "risk": "destructive",
+    "params": [],
+    "bodySchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 55,
+          "description": "Event type name"
+        },
+        "host": {
+          "type": "string",
+          "format": "uri",
+          "description": "Host user uri"
+        },
+        "co_hosts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          },
+          "description": "Collection of meeting co-host(s) user URIs"
+        },
+        "duration": {
+          "type": "number",
+          "maximum": 720,
+          "description": "Duration of meeting in minutes"
+        },
+        "timezone": {
+          "type": "string",
+          "description": "Time zone used for meeting. Defaults to host's time zone."
+        },
+        "date_setting": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "date_range"
+                  ],
+                  "title": "DateRangeType"
+                },
+                "start_date": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "Availability start - Must be before end_date. Format: YYYY-MM-DD"
+                },
+                "end_date": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "Availability end - Must be a date in the future and less than 365 days in the future from start_date. Format: YYYY-MM-DD"
+                }
+              },
+              "required": [
+                "type",
+                "start_date",
+                "end_date"
+              ],
+              "description": "Only allow scheduling within a specified date range",
+              "title": "DateRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "days_in_future"
+                  ],
+                  "title": "DaysInFutureType"
+                },
+                "days": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 365
+                },
+                "only_weekdays": {
+                  "type": "boolean",
+                  "description": "Excludes weekends and only counts Monday - Friday"
+                }
+              },
+              "required": [
+                "type",
+                "days",
+                "only_weekdays"
+              ],
+              "description": "Only allow scheduling for N days into the future from now",
+              "title": "DaysInFuture"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "spots"
+                  ],
+                  "title": "SpotsType"
+                },
+                "spots": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "start_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The first time a spot can be scheduled"
+                      },
+                      "end_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The last time a spot can be scheduled"
+                      }
+                    },
+                    "required": [
+                      "start_time",
+                      "end_time"
+                    ],
+                    "title": "SpotsSpotsItems"
+                  }
+                }
+              },
+              "required": [
+                "type",
+                "spots"
+              ],
+              "description": "Only allow scheduling with dedicated time spots",
+              "title": "Spots"
+            }
+          ],
+          "title": "OneOffEventTypesPostRequestBodyContentApplicationJsonSchemaDateSetting"
+        },
+        "location": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "custom"
+                  ],
+                  "title": "AdhocCustomLocationKind"
+                },
+                "location": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "description": "Information for a Custom Location",
+              "title": "AdhocCustomLocation"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "google_conference"
+                  ],
+                  "title": "AdhocGoogleConferenceKind"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "description": "Information for a Google Conference",
+              "title": "AdhocGoogleConference"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "gotomeeting_conference"
+                  ],
+                  "title": "AdhocGotoMeetingConferenceKind"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "description": "Information for a GotoMeeting Conference",
+              "title": "AdhocGotoMeetingConference"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "physical"
+                  ],
+                  "title": "AdhocInPersonMeetingKind"
+                },
+                "location": {
+                  "type": "string"
+                },
+                "additional_info": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "description": "Information for an In Person Meeting",
+              "title": "AdhocInPersonMeeting"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "inbound_call"
+                  ],
+                  "title": "AdhocInboundCallKind"
+                },
+                "phone_number": {
+                  "type": "string"
+                },
+                "additional_info": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "kind",
+                "phone_number"
+              ],
+              "description": "Information for an Inbound Call",
+              "title": "AdhocInboundCall"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "ask_invitee"
+                  ],
+                  "title": "AdhocInviteeSpecifiedLocationKind"
+                },
+                "location": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "description": "Information for an Invitee Specified Location",
+              "title": "AdhocInviteeSpecifiedLocation"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "microsoft_teams_conference"
+                  ],
+                  "title": "AdhocMicrosoftTeamsConferenceKind"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "description": "Information for a Microsoft Teams Conference",
+              "title": "AdhocMicrosoftTeamsConference"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "outbound_call"
+                  ],
+                  "title": "AdhocOutboundCallKind"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "description": "Information about an Outbound Call",
+              "title": "AdhocOutboundCall"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "webex_conference"
+                  ],
+                  "title": "AdhocWebExConferenceKind"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "description": "Information about a WebEx Conference",
+              "title": "AdhocWebExConference"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "zoom_conference"
+                  ],
+                  "title": "AdhocZoomConferenceKind"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "description": "Information about a Zoom Conference",
+              "title": "AdhocZoomConference"
+            }
+          ],
+          "title": "OneOffEventTypesPostRequestBodyContentApplicationJsonSchemaLocation"
+        }
+      },
+      "required": [
+        "name",
+        "host",
+        "duration",
+        "date_setting"
+      ],
+      "additionalProperties": false
+    },
+    "bodyRequired": true,
+    "paginated": false,
+    "scope": [
+      "event_types:write"
+    ],
+    "upstreamOperationId": "eventTypes_create-one-off-event-type"
+  },
+  {
+    "name": "get_event_type",
+    "title": "Get Event Type",
+    "description": "Get Event Type. Reads Calendly data. Required scopes: event_types:read.",
+    "method": "GET",
+    "path": "/event_types/{uuid}",
+    "group": "event_types",
+    "risk": "read",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "event_type_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "event_types:read"
+    ],
+    "upstreamOperationId": "eventTypes_get-event-type"
+  },
+  {
+    "name": "update_event_type",
+    "title": "Update Event Type",
+    "description": "Update Event Type. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: event_types:write.",
+    "method": "PATCH",
+    "path": "/event_types/{uuid}",
+    "group": "event_types",
+    "risk": "destructive",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "event_type_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "boolean",
+          "description": "Indicates if the event type is active or not"
+        },
+        "name": {
+          "type": "string",
+          "description": "The event type name"
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[a-f\\d]{6}$",
+          "description": "The hexadecimal color value of the event type's scheduling page"
+        },
+        "description": {
+          "type": "string",
+          "description": "The event type description"
+        },
+        "duration": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 720,
+          "description": "The length of sessions booked with this event type. Must be one of the duration options if they're provided."
+        },
+        "duration_options": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "description": "A maximum of 4 unique options is allowed. Each option must be >= 1 and <= 720."
+        },
+        "locale": {
+          "type": "string",
+          "enum": [
+            "de",
+            "en",
+            "es",
+            "fr",
+            "it",
+            "nl",
+            "pt",
+            "uk"
+          ],
+          "description": "The locale on the event type, used to determine the language of the event type's scheduling page",
+          "title": "EventTypesUuidPatchRequestBodyContentApplicationJsonSchemaLocale"
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "ask_invitee",
+                  "custom",
+                  "google_conference",
+                  "gotomeeting_conference",
+                  "inbound_call",
+                  "microsoft_teams_conference",
+                  "outbound_call",
+                  "physical",
+                  "webex_conference",
+                  "zoom_conference"
+                ],
+                "title": "LocationConfigurationKind"
+              },
+              "location": {
+                "type": "string"
+              },
+              "additional_info": {
+                "type": "string"
+              },
+              "phone_number": {
+                "type": "string"
+              }
+            },
+            "description": "A configuration for an EventType's location",
+            "title": "LocationConfiguration"
+          },
+          "description": "Configuration information for each possible location for this Event Type"
+        }
+      },
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "event_types:write"
+    ],
+    "upstreamOperationId": "eventTypes_update-event-type"
+  },
+  {
+    "name": "list_event_type_available_times",
+    "title": "List Event Type Available Times",
+    "description": "List Event Type Available Times. Reads Calendly data. Required scopes: availability:read.",
+    "method": "GET",
+    "path": "/event_type_available_times",
+    "group": "event_types",
+    "risk": "read",
+    "params": [
+      {
+        "name": "event_type",
+        "in": "query",
+        "description": "The uri associated with the event type",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "The uri associated with the event type"
+        },
+        "key": "event_type"
+      },
+      {
+        "name": "start_time",
+        "in": "query",
+        "description": "Start time of the requested availability range. Date cannot be in the past.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start time of the requested availability range. Date cannot be in the past."
+        },
+        "key": "start_time"
+      },
+      {
+        "name": "end_time",
+        "in": "query",
+        "description": "End time of the requested availability range. Date must be in the future and no greater than 31 days from start_time.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "description": "End time of the requested availability range. Date must be in the future and no greater than 31 days from start_time."
+        },
+        "key": "end_time"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "availability:read"
+    ],
+    "upstreamOperationId": "eventTypes_list-event-type-available-times"
+  },
+  {
+    "name": "list_event_type_hosts",
+    "title": "List Event Type Hosts",
+    "description": "List Event Type Hosts. Reads Calendly data. Supports bounded opaque page_token retrieval. Required scopes: event_types:read.",
+    "method": "GET",
+    "path": "/event_type_memberships",
+    "group": "event_types",
+    "risk": "read",
+    "params": [
+      {
+        "name": "event_type",
+        "in": "query",
+        "description": "The uri associated with the event type",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "The uri associated with the event type"
+        },
+        "key": "event_type"
+      },
+      {
+        "name": "count",
+        "in": "query",
+        "description": "The number of rows to return",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20,
+          "description": "The number of rows to return"
+        },
+        "key": "count"
+      },
+      {
+        "name": "page_token",
+        "in": "query",
+        "description": "The token to pass to get the next or previous portion of the collection",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "The token to pass to get the next or previous portion of the collection"
+        },
+        "key": "page_token"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": true,
+    "scope": [
+      "event_types:read"
+    ],
+    "upstreamOperationId": "eventTypes_list-event-type-memberships"
+  },
+  {
+    "name": "get_group",
+    "title": "Get Group",
+    "description": "Get Group. Reads Calendly data. Required scopes: groups:read.",
+    "method": "GET",
+    "path": "/groups/{uuid}",
+    "group": "groups",
+    "risk": "read",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "description": "Group unique identifier",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "Group unique identifier",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "group_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "groups:read"
+    ],
+    "upstreamOperationId": "groups_get-group"
+  },
+  {
+    "name": "get_group_relationship",
+    "title": "Get Group Relationship",
+    "description": "Get Group Relationship. Reads Calendly data. Required scopes: groups:read.",
+    "method": "GET",
+    "path": "/group_relationships/{uuid}",
+    "group": "groups",
+    "risk": "read",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "relationship_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "groups:read"
+    ],
+    "upstreamOperationId": "groups_get-group-relationship"
+  },
+  {
+    "name": "list_group_relationships",
+    "title": "List Group Relationships",
+    "description": "List Group Relationships. Reads Calendly data. Supports bounded opaque page_token retrieval. Required scopes: groups:read.",
+    "method": "GET",
+    "path": "/group_relationships",
+    "group": "groups",
+    "risk": "read",
+    "params": [
+      {
+        "name": "count",
+        "in": "query",
+        "description": "The number of rows to return",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20,
+          "description": "The number of rows to return"
+        },
+        "key": "count"
+      },
+      {
+        "name": "page_token",
+        "in": "query",
+        "description": "The token to pass to get the next or previous portion of the collection",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "The token to pass to get the next or previous portion of the collection"
+        },
+        "key": "page_token"
+      },
+      {
+        "name": "organization",
+        "in": "query",
+        "description": "Indicates the results should be filtered by organization",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Indicates the results should be filtered by organization"
+        },
+        "key": "organization"
+      },
+      {
+        "name": "owner",
+        "in": "query",
+        "description": "Indicates the results should be filtered by owner <br>\nOne Of:\n  - Organization Membership URI - `https://api.calendly.com/organization_memberships/AAAAAAAAAAAAAAAA`\n  - Organization Invitation URI - `https://api.calendly.com/organizations/AAAAAAAAAAAAAAAA/invitations/BBBBBBBBBBBBBBBB`\n",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Indicates the results should be filtered by owner <br>\nOne Of:\n  - Organization Membership URI - `https://api.calendly.com/organization_memberships/AAAAAAAAAAAAAAAA`\n  - Organization Invitation URI - `https://api.calendly.com/organizations/AAAAAAAAAAAAAAAA/invitations/BBBBBBBBBBBBBBBB`\n"
+        },
+        "key": "owner"
+      },
+      {
+        "name": "group",
+        "in": "query",
+        "description": "Indicates the results should be filtered by group",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Indicates the results should be filtered by group"
+        },
+        "key": "group"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": true,
+    "scope": [
+      "groups:read"
+    ],
+    "upstreamOperationId": "groups_list-group-relationships"
+  },
+  {
+    "name": "list_groups",
+    "title": "List Groups",
+    "description": "List Groups. Reads Calendly data. Supports bounded opaque page_token retrieval. Required scopes: groups:read.",
+    "method": "GET",
+    "path": "/groups",
+    "group": "groups",
+    "risk": "read",
+    "params": [
+      {
+        "name": "organization",
+        "in": "query",
+        "description": "Return groups that are associated with the organization associated with this URI",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Return groups that are associated with the organization associated with this URI"
+        },
+        "key": "organization"
+      },
+      {
+        "name": "page_token",
+        "in": "query",
+        "description": "The token to pass to get the next or previous portion of the collection",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "The token to pass to get the next or previous portion of the collection"
+        },
+        "key": "page_token"
+      },
+      {
+        "name": "count",
+        "in": "query",
+        "description": "The number of rows to return",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20,
+          "description": "The number of rows to return"
+        },
+        "key": "count"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": true,
+    "scope": [
+      "groups:read"
+    ],
+    "upstreamOperationId": "groups_list-groups"
+  },
+  {
+    "name": "list_user_locations",
+    "title": "List User Meeting Locations",
+    "description": "List User Meeting Locations. Reads Calendly data. Required scopes: locations:read.",
+    "method": "GET",
+    "path": "/locations",
+    "group": "locations",
+    "risk": "read",
+    "params": [
+      {
+        "name": "user",
+        "in": "query",
+        "description": "The URI associated with the user",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "The URI associated with the user"
+        },
+        "key": "user"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "locations:read"
+    ],
+    "upstreamOperationId": "locations_list-user-locations"
+  },
+  {
+    "name": "delete_recap",
+    "title": "Delete Recap",
+    "description": "Delete Recap. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: meeting_recaps:write.",
+    "method": "DELETE",
+    "path": "/meeting_recaps/{uuid}",
+    "group": "notetaker",
+    "risk": "destructive",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "recap_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "meeting_recaps:write"
+    ],
+    "upstreamOperationId": "notetaker_delete-meeting-recaps-uuid"
+  },
+  {
+    "name": "get_recap",
+    "title": "Get Recap",
+    "description": "Get Recap. Reads Calendly data. Required scopes: meeting_recaps:read.",
+    "method": "GET",
+    "path": "/meeting_recaps/{uuid}",
+    "group": "notetaker",
+    "risk": "read",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "recap_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "meeting_recaps:read"
+    ],
+    "upstreamOperationId": "notetaker_get-meeting-recaps-uuid-recap"
+  },
+  {
+    "name": "update_recap",
+    "title": "Update Recap",
+    "description": "Update Recap. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: meeting_recaps:write.",
+    "method": "PATCH",
+    "path": "/meeting_recaps/{uuid}",
+    "group": "notetaker",
+    "risk": "destructive",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "recap_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {
+        "summary_md": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Summary in Markdown."
+        },
+        "action_items_md": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Action items in Markdown."
+        },
+        "discussion_md": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Discussion notes in Markdown."
+        }
+      },
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "meeting_recaps:write"
+    ],
+    "upstreamOperationId": "notetaker_update-meeting-recaps-uuid"
+  },
+  {
+    "name": "get_transcript",
+    "title": "Get Transcript",
+    "description": "Get Transcript. Reads Calendly data. Required scopes: meeting_recaps:read.",
+    "method": "GET",
+    "path": "/meeting_recaps/{uuid}/transcript",
+    "group": "notetaker",
+    "risk": "read",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "description": "The meeting recap uuid",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "The meeting recap uuid",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "recap_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "meeting_recaps:read"
+    ],
+    "upstreamOperationId": "notetaker_get-transcript-meeting-recaps"
+  },
+  {
+    "name": "list_recaps",
+    "title": "List Recaps",
+    "description": "List Recaps. Reads Calendly data. Supports bounded opaque page_token retrieval. Required scopes: meeting_recaps:read.",
+    "method": "GET",
+    "path": "/meeting_recaps",
+    "group": "notetaker",
+    "risk": "read",
+    "params": [
+      {
+        "name": "event",
+        "in": "query",
+        "description": "Filter results to recaps associated with a specific event scheduled via Calendly. This field corresponds to the `/scheduled_events` endpoint.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Filter results to recaps associated with a specific event scheduled via Calendly. This field corresponds to the `/scheduled_events` endpoint."
+        },
+        "key": "event"
+      },
+      {
+        "name": "start_time",
+        "in": "query",
+        "description": "Return recaps for meetings that end after (or end at) this time (ISO 8601).",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Return recaps for meetings that end after (or end at) this time (ISO 8601)."
+        },
+        "key": "start_time"
+      },
+      {
+        "name": "end_time",
+        "in": "query",
+        "description": "Return recaps for meetings that start before (or start at) this time (ISO 8601).",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Return recaps for meetings that start before (or start at) this time (ISO 8601)."
+        },
+        "key": "end_time"
+      },
+      {
+        "name": "status",
+        "in": "query",
+        "description": "Filter by recap availability. When omitted, returns **Available** recaps only.\n\n- `available` — completed recaps with summary content\n- `processing` — recaps still being generated\n- `unavailable` — recaps that cannot be retrieved",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "available",
+            "processing",
+            "unavailable"
+          ],
+          "title": "MeetingRecapsGetParametersStatus",
+          "description": "Filter by recap availability. When omitted, returns **Available** recaps only.\n\n- `available` — completed recaps with summary content\n- `processing` — recaps still being generated\n- `unavailable` — recaps that cannot be retrieved"
+        },
+        "key": "status"
+      },
+      {
+        "name": "attendee",
+        "in": "query",
+        "description": "Filter results to recaps that include a specific attendee email address.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "email",
+          "description": "Filter results to recaps that include a specific attendee email address."
+        },
+        "key": "attendee"
+      },
+      {
+        "name": "count",
+        "in": "query",
+        "description": "The number of rows to return",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20,
+          "description": "The number of rows to return"
+        },
+        "key": "count"
+      },
+      {
+        "name": "page_token",
+        "in": "query",
+        "description": "The token to pass to get the next or previous portion of the collection",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "The token to pass to get the next or previous portion of the collection"
+        },
+        "key": "page_token"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": true,
+    "scope": [
+      "meeting_recaps:read"
+    ],
+    "upstreamOperationId": "notetaker_list-meeting-recaps"
+  },
+  {
+    "name": "get_organization",
+    "title": "Get Organization",
+    "description": "Get Organization. Reads Calendly data. Required scopes: organizations:read.",
+    "method": "GET",
+    "path": "/organizations/{uuid}",
+    "group": "organizations",
+    "risk": "read",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "description": "The organization's unique identifier",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "The organization's unique identifier",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "org_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "organizations:read"
+    ],
+    "upstreamOperationId": "organizations_get-organization"
+  },
+  {
+    "name": "get_organization_invitation",
+    "title": "Get Organization Invitation",
+    "description": "Get Organization Invitation. Reads Calendly data. Required scopes: organizations:read.",
+    "method": "GET",
+    "path": "/organizations/{org_uuid}/invitations/{uuid}",
+    "group": "organizations",
+    "risk": "read",
+    "params": [
+      {
+        "name": "org_uuid",
+        "in": "path",
+        "description": "The organization’s unique identifier",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "The organization’s unique identifier",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "org_uuid"
+      },
+      {
+        "name": "uuid",
+        "in": "path",
+        "description": "The organization invitation's unique identifier",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "The organization invitation's unique identifier",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "invitation_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "organizations:read"
+    ],
+    "upstreamOperationId": "organizations_get-organization-invitation"
+  },
+  {
+    "name": "revoke_organization_invitation",
+    "title": "Revoke User's Organization Invitation",
+    "description": "Revoke User's Organization Invitation. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: organizations:write.",
+    "method": "DELETE",
+    "path": "/organizations/{org_uuid}/invitations/{uuid}",
+    "group": "organizations",
+    "risk": "destructive",
+    "params": [
+      {
+        "name": "org_uuid",
+        "in": "path",
+        "description": "The organization’s unique identifier",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "The organization’s unique identifier",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "org_uuid"
+      },
+      {
+        "name": "uuid",
+        "in": "path",
+        "description": "The organization invitation's unique identifier",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "The organization invitation's unique identifier",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "invitation_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "organizations:write"
+    ],
+    "upstreamOperationId": "organizations_revoke-organization-invitation"
+  },
+  {
+    "name": "get_organization_membership",
+    "title": "Get Organization Membership",
+    "description": "Get Organization Membership. Reads Calendly data. Required scopes: organizations:read.",
+    "method": "GET",
+    "path": "/organization_memberships/{uuid}",
+    "group": "organizations",
+    "risk": "read",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "description": "The organization membership's unique identifier",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "The organization membership's unique identifier",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "membership_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "organizations:read"
+    ],
+    "upstreamOperationId": "organizations_get-organization-membership"
+  },
+  {
+    "name": "remove_from_organization",
+    "title": "Remove User from Organization",
+    "description": "Remove User from Organization. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: organizations:write.",
+    "method": "DELETE",
+    "path": "/organization_memberships/{uuid}",
+    "group": "organizations",
+    "risk": "destructive",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "description": "The organization membership's unique identifier",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "The organization membership's unique identifier",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "membership_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "organizations:write"
+    ],
+    "upstreamOperationId": "organizations_delete-organization-membership"
+  },
+  {
+    "name": "get_team",
+    "title": "Get Team",
+    "description": "Get Team. Reads Calendly data. Required scopes: organizations:read.",
+    "method": "GET",
+    "path": "/teams/{team_uuid}",
+    "group": "organizations",
+    "risk": "read",
+    "params": [
+      {
+        "name": "team_uuid",
+        "in": "path",
+        "description": "Team UUID",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "Team UUID",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "team_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "organizations:read"
+    ],
+    "upstreamOperationId": "organizations_get-team"
+  },
+  {
+    "name": "invite_to_organization",
+    "title": "Invite User to Organization",
+    "description": "Invite User to Organization. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: organizations:write.",
+    "method": "POST",
+    "path": "/organizations/{uuid}/invitations",
+    "group": "organizations",
+    "risk": "destructive",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "description": "The organization's unique identifier",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "The organization's unique identifier",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "org_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "The email of the user being invited"
+        }
+      },
+      "required": [
+        "email"
+      ],
+      "additionalProperties": false
+    },
+    "bodyRequired": true,
+    "paginated": false,
+    "scope": [
+      "organizations:write"
+    ],
+    "upstreamOperationId": "organizations_create-organization-invitation"
+  },
+  {
+    "name": "list_organization_invitations",
+    "title": "List Organization Invitations",
+    "description": "List Organization Invitations. Reads Calendly data. Supports bounded opaque page_token retrieval. Required scopes: organizations:read.",
+    "method": "GET",
+    "path": "/organizations/{uuid}/invitations",
+    "group": "organizations",
+    "risk": "read",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "description": "The organization's unique identifier",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "The organization's unique identifier",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "org_uuid"
+      },
+      {
+        "name": "count",
+        "in": "query",
+        "description": "The number of rows to return",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20,
+          "description": "The number of rows to return"
+        },
+        "key": "count"
+      },
+      {
+        "name": "page_token",
+        "in": "query",
+        "description": "The token to pass to get the next or previous portion of the collection",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "The token to pass to get the next or previous portion of the collection"
+        },
+        "key": "page_token"
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "description": "Order results by the field name and direction specified (ascending or descending). Returns multiple sets of results in a comma-separated list.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "default": "created_at:asc",
+          "description": "Order results by the field name and direction specified (ascending or descending). Returns multiple sets of results in a comma-separated list."
+        },
+        "key": "sort"
+      },
+      {
+        "name": "email",
+        "in": "query",
+        "description": "Indicates if the results should be filtered by email address",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "email",
+          "description": "Indicates if the results should be filtered by email address"
+        },
+        "key": "email"
+      },
+      {
+        "name": "status",
+        "in": "query",
+        "description": "Indicates if the results should be filtered by status  (\"pending\", \"accepted\", or \"declined\")",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "accepted",
+            "declined"
+          ],
+          "title": "OrganizationsUuidInvitationsGetParametersStatus",
+          "description": "Indicates if the results should be filtered by status  (\"pending\", \"accepted\", or \"declined\")"
+        },
+        "key": "status"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": true,
+    "scope": [
+      "organizations:read"
+    ],
+    "upstreamOperationId": "organizations_list-organization-invitations"
+  },
+  {
+    "name": "list_organization_memberships",
+    "title": "List Organization Memberships",
+    "description": "List Organization Memberships. Reads Calendly data. Supports bounded opaque page_token retrieval. Required scopes: organizations:read.",
+    "method": "GET",
+    "path": "/organization_memberships",
+    "group": "organizations",
+    "risk": "read",
+    "params": [
+      {
+        "name": "page_token",
+        "in": "query",
+        "description": "The token to pass to get the next or previous portion of the collection",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "The token to pass to get the next or previous portion of the collection"
+        },
+        "key": "page_token"
+      },
+      {
+        "name": "count",
+        "in": "query",
+        "description": "The number of rows to return",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20,
+          "description": "The number of rows to return"
+        },
+        "key": "count"
+      },
+      {
+        "name": "email",
+        "in": "query",
+        "description": "Indicates if the results should be filtered by email address",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "email",
+          "description": "Indicates if the results should be filtered by email address"
+        },
+        "key": "email"
+      },
+      {
+        "name": "organization",
+        "in": "query",
+        "description": "Indicates if the results should be filtered by organization",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Indicates if the results should be filtered by organization"
+        },
+        "key": "organization"
+      },
+      {
+        "name": "user",
+        "in": "query",
+        "description": "Indicates if the results should be filtered by user",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Indicates if the results should be filtered by user"
+        },
+        "key": "user"
+      },
+      {
+        "name": "role",
+        "in": "query",
+        "description": "Indicates if the results should be filtered by role",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "owner",
+            "admin",
+            "user"
+          ],
+          "title": "OrganizationMembershipsGetParametersRole",
+          "description": "Indicates if the results should be filtered by role"
+        },
+        "key": "role"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": true,
+    "scope": [
+      "organizations:read"
+    ],
+    "upstreamOperationId": "organizations_list-organization-memberships"
+  },
+  {
+    "name": "list_teams",
+    "title": "List Teams",
+    "description": "List Teams. Reads Calendly data. Supports bounded opaque page_token retrieval. Required scopes: organizations:read.",
+    "method": "GET",
+    "path": "/teams",
+    "group": "organizations",
+    "risk": "read",
+    "params": [
+      {
+        "name": "user",
+        "in": "query",
+        "description": "Filter results to Teams associated with a specific user",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Filter results to Teams associated with a specific user"
+        },
+        "key": "user"
+      },
+      {
+        "name": "page_token",
+        "in": "query",
+        "description": "The token to pass to get the next or previous portion of the collection",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "The token to pass to get the next or previous portion of the collection"
+        },
+        "key": "page_token"
+      },
+      {
+        "name": "count",
+        "in": "query",
+        "description": "The number of rows to return",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20,
+          "description": "The number of rows to return"
+        },
+        "key": "count"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": true,
+    "scope": [
+      "organizations:read"
+    ],
+    "upstreamOperationId": "organizations_list-teams"
+  },
+  {
+    "name": "list_outgoing_communications",
+    "title": "List outgoing communications",
+    "description": "List outgoing communications. Reads Calendly data. Supports bounded opaque page_token retrieval. Required scopes: outgoing_communications:read.",
+    "method": "GET",
+    "path": "/outgoing_communications",
+    "group": "outgoing_communications",
+    "risk": "read",
+    "params": [
+      {
+        "name": "organization",
+        "in": "query",
+        "description": "Return outgoing communications from the organization associated with this URI",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Return outgoing communications from the organization associated with this URI"
+        },
+        "key": "organization"
+      },
+      {
+        "name": "count",
+        "in": "query",
+        "description": "The number of records to return",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20,
+          "description": "The number of records to return"
+        },
+        "key": "count"
+      },
+      {
+        "name": "min_created_at",
+        "in": "query",
+        "description": "Include outgoing communications that were created after this time (sample time format: \"2020-01-02T03:04:05.678Z\"). This time should use the UTC timezone",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Include outgoing communications that were created after this time (sample time format: \"2020-01-02T03:04:05.678Z\"). This time should use the UTC timezone"
+        },
+        "key": "min_created_at"
+      },
+      {
+        "name": "max_created_at",
+        "in": "query",
+        "description": "Include outgoing communications that were created prior to this time (sample time format: \"2020-01-02T03:04:05.678Z\"). This time should use the UTC timezone",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Include outgoing communications that were created prior to this time (sample time format: \"2020-01-02T03:04:05.678Z\"). This time should use the UTC timezone"
+        },
+        "key": "max_created_at"
+      },
+      {
+        "name": "page_token",
+        "in": "query",
+        "description": "The token to pass to get the next portion of the collection",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "The token to pass to get the next portion of the collection"
+        },
+        "key": "page_token"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": true,
+    "scope": [
+      "outgoing_communications:read"
+    ],
+    "upstreamOperationId": "outgoingCommunications_list-outgoing-communications"
+  },
+  {
+    "name": "get_routing_form",
+    "title": "Get Routing Form",
+    "description": "Get Routing Form. Reads Calendly data. Required scopes: routing_forms:read.",
+    "method": "GET",
+    "path": "/routing_forms/{uuid}",
+    "group": "routing_forms",
+    "risk": "read",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "form_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "routing_forms:read"
+    ],
+    "upstreamOperationId": "routingForms_get-routing-form"
+  },
+  {
+    "name": "get_routing_form_submission",
+    "title": "Get Routing Form Submission",
+    "description": "Get Routing Form Submission. Reads Calendly data. Required scopes: routing_forms:read.",
+    "method": "GET",
+    "path": "/routing_form_submissions/{uuid}",
+    "group": "routing_forms",
+    "risk": "read",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "submission_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "routing_forms:read"
+    ],
+    "upstreamOperationId": "routingForms_get-routing-form-submission"
+  },
+  {
+    "name": "list_routing_form_submissions",
+    "title": "List Routing Form Submissions",
+    "description": "List Routing Form Submissions. Reads Calendly data. Supports bounded opaque page_token retrieval. Required scopes: routing_forms:read.",
+    "method": "GET",
+    "path": "/routing_form_submissions",
+    "group": "routing_forms",
+    "risk": "read",
+    "params": [
+      {
+        "name": "form",
+        "in": "query",
+        "description": "View routing form submissions associated with the routing form's URI.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "View routing form submissions associated with the routing form's URI."
+        },
+        "key": "form"
+      },
+      {
+        "name": "count",
+        "in": "query",
+        "description": "The number of rows to return",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20,
+          "description": "The number of rows to return"
+        },
+        "key": "count"
+      },
+      {
+        "name": "page_token",
+        "in": "query",
+        "description": "The token to pass to get the next or previous portion of the collection",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "The token to pass to get the next or previous portion of the collection"
+        },
+        "key": "page_token"
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "description": "Order results by the specified field and direction. Accepts comma-separated list of {field}:{direction} values. Supported fields are: created_at. Sort direction is specified as: asc, desc.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Order results by the specified field and direction. Accepts comma-separated list of {field}:{direction} values. Supported fields are: created_at. Sort direction is specified as: asc, desc."
+        },
+        "key": "sort"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": true,
+    "scope": [
+      "routing_forms:read"
+    ],
+    "upstreamOperationId": "routingForms_list-routing-form-submissions"
+  },
+  {
+    "name": "list_routing_forms",
+    "title": "List Routing Forms",
+    "description": "List Routing Forms. Reads Calendly data. Supports bounded opaque page_token retrieval. Required scopes: routing_forms:read.",
+    "method": "GET",
+    "path": "/routing_forms",
+    "group": "routing_forms",
+    "risk": "read",
+    "params": [
+      {
+        "name": "organization",
+        "in": "query",
+        "description": "View organization routing forms associated with the organization's URI.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "View organization routing forms associated with the organization's URI."
+        },
+        "key": "organization"
+      },
+      {
+        "name": "count",
+        "in": "query",
+        "description": "The number of rows to return",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20,
+          "description": "The number of rows to return"
+        },
+        "key": "count"
+      },
+      {
+        "name": "page_token",
+        "in": "query",
+        "description": "The token to pass to get the next or previous portion of the collection",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "The token to pass to get the next or previous portion of the collection"
+        },
+        "key": "page_token"
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "description": "Order results by the specified field and direction. Accepts comma-separated list of {field}:{direction} values. Supported fields are: created_at. Sort direction is specified as: asc, desc.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Order results by the specified field and direction. Accepts comma-separated list of {field}:{direction} values. Supported fields are: created_at. Sort direction is specified as: asc, desc."
+        },
+        "key": "sort"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": true,
+    "scope": [
+      "routing_forms:read"
+    ],
+    "upstreamOperationId": "routingForms_list-routing-forms"
+  },
+  {
+    "name": "cancel_event",
+    "title": "Cancel Event",
+    "description": "Cancel Event. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: scheduled_events:write.",
+    "method": "POST",
+    "path": "/scheduled_events/{uuid}/cancellation",
+    "group": "scheduled_events",
+    "risk": "destructive",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "description": "The event's unique indentifier",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "The event's unique indentifier",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "event_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string",
+          "maxLength": 10000,
+          "description": "Reason for cancellation"
+        }
+      },
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "scheduled_events:write"
+    ],
+    "upstreamOperationId": "scheduledEvents_create-scheduled-event-cancellation"
+  },
+  {
+    "name": "create_invitee",
+    "title": "Create Event Invitee (Scheduling API)",
+    "description": "Create Event Invitee (Scheduling API). Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: scheduled_events:write.",
+    "method": "POST",
+    "path": "/invitees",
+    "group": "scheduled_events",
+    "risk": "destructive",
+    "params": [],
+    "bodySchema": {
+      "type": "object",
+      "properties": {
+        "event_type": {
+          "type": "string",
+          "format": "uri",
+          "description": "Canonical reference (unique identifier) for the event type being scheduled "
+        },
+        "start_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The start time in UTC of the scheduled event"
+        },
+        "invitee": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "The full name of the invitee. **Required if** `first_name` **is not provided**"
+            },
+            "first_name": {
+              "type": "string",
+              "description": "The first name of the invitee. **Required if** `name` **is not provided**"
+            },
+            "last_name": {
+              "type": "string",
+              "description": "The last name of the invitee"
+            },
+            "email": {
+              "type": "string",
+              "description": "The email of the invitee",
+              "format": "email"
+            },
+            "timezone": {
+              "type": "string",
+              "description": "The timezone of the invitee",
+              "minLength": 1
+            },
+            "text_reminder_number": {
+              "type": "string",
+              "description": "Invitee's phone number for SMS reminders. Must be a valid phone number (e.g. +14155551234)"
+            }
+          },
+          "required": [
+            "email",
+            "timezone"
+          ],
+          "title": "InviteesPostRequestBodyContentApplicationJsonSchemaInvitee",
+          "anyOf": [
+            {
+              "required": [
+                "name"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            {
+              "required": [
+                "first_name"
+              ],
+              "properties": {
+                "first_name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          ]
+        },
+        "location": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "physical"
+                  ],
+                  "description": "Indicates that the event will be an in-person meeting.",
+                  "title": "InviteeInPersonMeetingKind"
+                },
+                "location": {
+                  "type": "string",
+                  "description": "The specific physical location"
+                }
+              },
+              "required": [
+                "kind",
+                "location"
+              ],
+              "description": "Information for an In Person Meeting",
+              "title": "InviteeInPersonMeeting"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "inbound_call"
+                  ],
+                  "description": "Indicates that the invitee will call the event host",
+                  "title": "InviteeInboundCallKind"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "description": "Information for an Inbound Call",
+              "title": "InviteeInboundCall"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "outbound_call"
+                  ],
+                  "description": "Indicates that the event host (publisher) will call the invitee",
+                  "title": "InviteeOutboundCallKind"
+                },
+                "location": {
+                  "type": "string",
+                  "description": "The phone number the event host (publisher) will use to call the invitee"
+                }
+              },
+              "required": [
+                "kind",
+                "location"
+              ],
+              "description": "Information about an Outbound Call",
+              "title": "InviteeOutboundCall"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "zoom_conference"
+                  ],
+                  "description": "The event location is a Zoom conference",
+                  "title": "InviteeZoomConferenceKind"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "description": "Information about a Zoom Conference",
+              "title": "InviteeZoomConference"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "google_conference"
+                  ],
+                  "description": "The event location is a Google Meet or Hangouts conference",
+                  "title": "InviteeGoogleConferenceKind"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "description": "Information for a Google Conference",
+              "title": "InviteeGoogleConference"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "gotomeeting_conference"
+                  ],
+                  "description": "The event location is a GoToMeeting conference",
+                  "title": "InviteeGotoMeetingConferenceKind"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "description": "Information for a GotoMeeting Conference",
+              "title": "InviteeGotoMeetingConference"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "microsoft_teams_conference"
+                  ],
+                  "description": "The event location is a Microsoft Teams conference",
+                  "title": "InviteeMicrosoftTeamsConferenceKind"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "description": "Information for a Microsoft Teams Conference",
+              "title": "InviteeMicrosoftTeamsConference"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "webex_conference"
+                  ],
+                  "description": "The event location is a WebEx conference",
+                  "title": "InviteeWebExConferenceKind"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "description": "Information about a WebEx Conference",
+              "title": "InviteeWebExConference"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "ask_invitee"
+                  ],
+                  "description": "Indicates that the event location will be selected by the invitee",
+                  "title": "InviteeInviteeSpecifiedLocationKind"
+                },
+                "location": {
+                  "type": "string",
+                  "description": "The event location description provided by the invitee"
+                }
+              },
+              "required": [
+                "kind",
+                "location"
+              ],
+              "description": "Information for an Invitee Specified Location",
+              "title": "InviteeInviteeSpecifiedLocation"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "custom"
+                  ],
+                  "description": "The event location doesn't fall into a standard category defined by the event host (publisher)",
+                  "title": "InviteeCustomLocationKind"
+                },
+                "location": {
+                  "type": "string",
+                  "description": "The specific custom location"
+                }
+              },
+              "required": [
+                "kind",
+                "location"
+              ],
+              "description": "Information for a Custom Location",
+              "title": "InviteeCustomLocation"
+            }
+          ],
+          "description": "The polymorphic base type for an event location that Calendly supports.  \n\nNote: \n- Location.kind must be supplied if location is defined.\n- Location must match location specified on the EventType.\n- Do not pass the location object for an EventType with a round_robin pooling_type.",
+          "title": "InviteeLocation"
+        },
+        "questions_and_answers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "question": {
+                "type": "string",
+                "description": "A question for the invitee. String is case sensitive and must exactly match the question."
+              },
+              "answer": {
+                "type": "string",
+                "description": "The invitee's response to the question"
+              },
+              "position": {
+                "type": "integer",
+                "description": "The position of the question in relation to others"
+              }
+            },
+            "required": [
+              "question",
+              "answer",
+              "position"
+            ],
+            "description": "A response to a question on a booking page form. Required questions must be included in the body and match on the question string exactly.",
+            "title": "InviteeQuestionAndAnswer"
+          }
+        },
+        "tracking": {
+          "type": "object",
+          "properties": {
+            "utm_campaign": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "The UTM parameter used to track a campaign"
+            },
+            "utm_source": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "The UTM parameter that identifies the source (platform where the traffic originates)"
+            },
+            "utm_medium": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "The UTM parameter that identifies the type of input (e.g. Cost Per Click (CPC), social media, affiliate or QR code)"
+            },
+            "utm_content": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "UTM content tracking parameter"
+            },
+            "utm_term": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "The UTM parameter used to track keywords"
+            },
+            "salesforce_uuid": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "The Salesforce record unique identifier"
+            }
+          },
+          "required": [
+            "utm_campaign",
+            "utm_source",
+            "utm_medium",
+            "utm_content",
+            "utm_term",
+            "salesforce_uuid"
+          ],
+          "description": "The UTM and Salesforce tracking parameters associated with an Invitee",
+          "title": "InviteeTracking"
+        },
+        "event_guests": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "email"
+          },
+          "description": "Emails of invitee guests. Max 10.",
+          "maxItems": 10
+        }
+      },
+      "required": [
+        "event_type",
+        "start_time",
+        "invitee"
+      ],
+      "additionalProperties": false
+    },
+    "bodyRequired": true,
+    "paginated": false,
+    "scope": [
+      "scheduled_events:write"
+    ],
+    "upstreamOperationId": "scheduledEvents_create-event-invitee"
+  },
+  {
+    "name": "create_no_show",
+    "title": "Create Invitee No Show",
+    "description": "Create Invitee No Show. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: scheduled_events:write.",
+    "method": "POST",
+    "path": "/invitee_no_shows",
+    "group": "scheduled_events",
+    "risk": "destructive",
+    "params": [],
+    "bodySchema": {
+      "type": "object",
+      "properties": {
+        "invitee": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "invitee"
+      ]
+    },
+    "bodyRequired": true,
+    "paginated": false,
+    "scope": [
+      "scheduled_events:write"
+    ],
+    "upstreamOperationId": "scheduledEvents_create-invitee-no-show"
+  },
+  {
+    "name": "delete_no_show",
+    "title": "Delete Invitee No Show",
+    "description": "Delete Invitee No Show. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: scheduled_events:write.",
+    "method": "DELETE",
+    "path": "/invitee_no_shows/{uuid}",
+    "group": "scheduled_events",
+    "risk": "destructive",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "no_show_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "scheduled_events:write"
+    ],
+    "upstreamOperationId": "scheduledEvents_delete-invitee-no-show"
+  },
+  {
+    "name": "get_no_show",
+    "title": "Get Invitee No Show",
+    "description": "Get Invitee No Show. Reads Calendly data. Required scopes: scheduled_events:read.",
+    "method": "GET",
+    "path": "/invitee_no_shows/{uuid}",
+    "group": "scheduled_events",
+    "risk": "read",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "no_show_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "scheduled_events:read"
+    ],
+    "upstreamOperationId": "scheduledEvents_get-invitee-no-show"
+  },
+  {
+    "name": "get_event",
+    "title": "Get Event",
+    "description": "Get Event. Reads Calendly data. Required scopes: scheduled_events:read.",
+    "method": "GET",
+    "path": "/scheduled_events/{uuid}",
+    "group": "scheduled_events",
+    "risk": "read",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "description": "The event's unique identifier",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "The event's unique identifier",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "event_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "scheduled_events:read"
+    ],
+    "upstreamOperationId": "scheduledEvents_get-scheduled-event"
+  },
+  {
+    "name": "get_event_invitee",
+    "title": "Get Event Invitee",
+    "description": "Get Event Invitee. Reads Calendly data. Required scopes: scheduled_events:read.",
+    "method": "GET",
+    "path": "/scheduled_events/{event_uuid}/invitees/{invitee_uuid}",
+    "group": "scheduled_events",
+    "risk": "read",
+    "params": [
+      {
+        "name": "event_uuid",
+        "in": "path",
+        "description": "The event's unique identifier",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "The event's unique identifier",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "event_uuid"
+      },
+      {
+        "name": "invitee_uuid",
+        "in": "path",
+        "description": "The invitee's unique identifier",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "The invitee's unique identifier",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "invitee_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "scheduled_events:read"
+    ],
+    "upstreamOperationId": "scheduledEvents_get-event-invitee"
+  },
+  {
+    "name": "list_event_invitees",
+    "title": "List Event Invitees",
+    "description": "List Event Invitees. Reads Calendly data. Supports bounded opaque page_token retrieval. Required scopes: scheduled_events:read.",
+    "method": "GET",
+    "path": "/scheduled_events/{uuid}/invitees",
+    "group": "scheduled_events",
+    "risk": "read",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "event_uuid"
+      },
+      {
+        "name": "status",
+        "in": "query",
+        "description": "Indicates if the invitee \"canceled\" or still \"active\"",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "active",
+            "canceled"
+          ],
+          "title": "ScheduledEventsUuidInviteesGetParametersStatus",
+          "description": "Indicates if the invitee \"canceled\" or still \"active\""
+        },
+        "key": "status"
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "description": "Order results by the **created_at** field and direction specified: ascending (\"asc\") or descending (\"desc\")",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "default": "created_at:asc",
+          "description": "Order results by the **created_at** field and direction specified: ascending (\"asc\") or descending (\"desc\")"
+        },
+        "key": "sort"
+      },
+      {
+        "name": "email",
+        "in": "query",
+        "description": "Indicates if the results should be filtered by email address",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "email",
+          "description": "Indicates if the results should be filtered by email address"
+        },
+        "key": "email"
+      },
+      {
+        "name": "page_token",
+        "in": "query",
+        "description": "The token to pass to get the next or previous portion of the collection",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "The token to pass to get the next or previous portion of the collection"
+        },
+        "key": "page_token"
+      },
+      {
+        "name": "count",
+        "in": "query",
+        "description": "The number of rows to return",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20,
+          "description": "The number of rows to return"
+        },
+        "key": "count"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": true,
+    "scope": [
+      "scheduled_events:read"
+    ],
+    "upstreamOperationId": "scheduledEvents_list-event-invitees"
+  },
+  {
+    "name": "list_events",
+    "title": "List Events",
+    "description": "List Events. Reads Calendly data. Supports bounded opaque page_token retrieval. Required scopes: scheduled_events:read.",
+    "method": "GET",
+    "path": "/scheduled_events",
+    "group": "scheduled_events",
+    "risk": "read",
+    "params": [
+      {
+        "name": "user",
+        "in": "query",
+        "description": "Return events that are scheduled with the user associated with this URI",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Return events that are scheduled with the user associated with this URI"
+        },
+        "key": "user"
+      },
+      {
+        "name": "organization",
+        "in": "query",
+        "description": "Return events that are scheduled with the organization associated with this URI",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Return events that are scheduled with the organization associated with this URI"
+        },
+        "key": "organization"
+      },
+      {
+        "name": "invitee_email",
+        "in": "query",
+        "description": "Return events that are scheduled with the invitee associated with this email address",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "email",
+          "description": "Return events that are scheduled with the invitee associated with this email address"
+        },
+        "key": "invitee_email"
+      },
+      {
+        "name": "status",
+        "in": "query",
+        "description": "Whether the scheduled event is `active` or `canceled`",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "active",
+            "canceled"
+          ],
+          "title": "ScheduledEventsGetParametersStatus",
+          "description": "Whether the scheduled event is `active` or `canceled`"
+        },
+        "key": "status"
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "description": "Order results by the specified field and direction. Accepts comma-separated list of {field}:{direction} values.\nSupported fields are: start_time.\nSort direction is specified as: asc, desc.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Order results by the specified field and direction. Accepts comma-separated list of {field}:{direction} values.\nSupported fields are: start_time.\nSort direction is specified as: asc, desc."
+        },
+        "key": "sort"
+      },
+      {
+        "name": "min_start_time",
+        "in": "query",
+        "description": "Include events with start times after this time (sample time format: \"2020-01-02T03:04:05.678123Z\"). This time should use the UTC timezone.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Include events with start times after this time (sample time format: \"2020-01-02T03:04:05.678123Z\"). This time should use the UTC timezone."
+        },
+        "key": "min_start_time"
+      },
+      {
+        "name": "max_start_time",
+        "in": "query",
+        "description": "Include events with start times prior to this time (sample time format: \"2020-01-02T03:04:05.678123Z\"). This time should use the UTC timezone.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Include events with start times prior to this time (sample time format: \"2020-01-02T03:04:05.678123Z\"). This time should use the UTC timezone."
+        },
+        "key": "max_start_time"
+      },
+      {
+        "name": "page_token",
+        "in": "query",
+        "description": "The token to pass to get the next or previous portion of the collection",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "The token to pass to get the next or previous portion of the collection"
+        },
+        "key": "page_token"
+      },
+      {
+        "name": "count",
+        "in": "query",
+        "description": "The number of rows to return",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20,
+          "description": "The number of rows to return"
+        },
+        "key": "count"
+      },
+      {
+        "name": "group",
+        "in": "query",
+        "description": "Return events that are scheduled with the group associated with this URI",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Return events that are scheduled with the group associated with this URI"
+        },
+        "key": "group"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": true,
+    "scope": [
+      "scheduled_events:read"
+    ],
+    "upstreamOperationId": "scheduledEvents_list-scheduled-events"
+  },
+  {
+    "name": "create_scheduling_link",
+    "title": "Create Single-Use Scheduling Link",
+    "description": "Create Single-Use Scheduling Link. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: scheduling_links:write.",
+    "method": "POST",
+    "path": "/scheduling_links",
+    "group": "scheduling_links",
+    "risk": "destructive",
+    "params": [],
+    "bodySchema": {
+      "type": "object",
+      "properties": {
+        "max_event_count": {
+          "type": "string",
+          "enum": [
+            "1"
+          ],
+          "description": "The max number of events that can be scheduled using this scheduling link.",
+          "title": "SchedulingLinksPostRequestBodyContentApplicationJsonSchemaMaxEventCount"
+        },
+        "owner": {
+          "type": "string",
+          "format": "uri",
+          "description": "A link to the resource that owns this Scheduling Link (currently, this is always an Event Type)"
+        },
+        "owner_type": {
+          "type": "string",
+          "enum": [
+            "EventType"
+          ],
+          "description": "Resource type (currently, this is always EventType)",
+          "title": "SchedulingLinksPostRequestBodyContentApplicationJsonSchemaOwnerType"
+        }
+      },
+      "required": [
+        "max_event_count",
+        "owner",
+        "owner_type"
+      ],
+      "additionalProperties": false
+    },
+    "bodyRequired": true,
+    "paginated": false,
+    "scope": [
+      "scheduling_links:write"
+    ],
+    "upstreamOperationId": "schedulingLinks_create-scheduling-link"
+  },
+  {
+    "name": "create_share",
+    "title": "Create Share",
+    "description": "Create Share. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: shares:write.",
+    "method": "POST",
+    "path": "/shares",
+    "group": "shares",
+    "risk": "destructive",
+    "params": [],
+    "bodySchema": {
+      "type": "object",
+      "properties": {
+        "event_type": {
+          "type": "string",
+          "format": "uri"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 55
+        },
+        "duration": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 720,
+          "description": "Must be one of the provided duration options. If duration options aren't provided then duration must be one of the duration options inherited from the event type."
+        },
+        "duration_options": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "description": "A maximum of 4 unique options is allowed. Each option must be >= 1 and <= 720."
+        },
+        "period_type": {
+          "type": "string",
+          "enum": [
+            "available_moving",
+            "moving",
+            "fixed",
+            "unlimited"
+          ],
+          "title": "SharesPostRequestBodyContentApplicationJsonSchemaPeriodType"
+        },
+        "start_date": {
+          "type": "string",
+          "format": "date",
+          "description": "is required when `period_type` is 'fixed'\nFormat: `YYYY-MM-DD`"
+        },
+        "end_date": {
+          "type": "string",
+          "format": "date",
+          "description": "is required when `period_type` is 'fixed'\nFormat: `YYYY-MM-DD`"
+        },
+        "max_booking_time": {
+          "type": "integer",
+          "description": "is required when `period_type` is 'moving' or 'available_moving'"
+        },
+        "hide_location": {
+          "type": "boolean",
+          "description": "determines if a location is hidden until invitee books a spot, only respected when there is a single custom location configured"
+        },
+        "location_configurations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": "string",
+                "maxLength": 255,
+                "description": "is only supported when `kind` is 'physical', 'custom' or 'ask_invitee'"
+              },
+              "additional_info": {
+                "type": "string",
+                "maxLength": 255,
+                "description": "is only supported when `kind` is 'physical' or 'inbound_call' "
+              },
+              "phone_number": {
+                "type": "string",
+                "description": "is required when `kind` is 'inbound_call'"
+              },
+              "position": {
+                "type": "integer"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "physical",
+                  "ask_invitee",
+                  "custom",
+                  "outbound_call",
+                  "inbound_call",
+                  "google_conference",
+                  "gotomeeting_conference",
+                  "microsoft_teams_conference",
+                  "webex_conference",
+                  "zoom_conference"
+                ],
+                "title": "SharesPostRequestBodyContentApplicationJsonSchemaLocationConfigurationsItemsKind"
+              }
+            },
+            "title": "SharesPostRequestBodyContentApplicationJsonSchemaLocationConfigurationsItems"
+          }
+        },
+        "availability_rule": {
+          "type": "object",
+          "properties": {
+            "rules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "wday",
+                      "date"
+                    ],
+                    "title": "SharesPostRequestBodyContentApplicationJsonSchemaAvailabilityRuleRulesItemsType"
+                  },
+                  "wday": {
+                    "type": "string",
+                    "enum": [
+                      "sunday",
+                      "monday",
+                      "tuesday",
+                      "wednesday",
+                      "thursday",
+                      "friday",
+                      "saturday"
+                    ],
+                    "description": "is required when `type` is 'wday'",
+                    "title": "SharesPostRequestBodyContentApplicationJsonSchemaAvailabilityRuleRulesItemsWday"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "is required when `type` is 'date'\nFormat: `YYYY-MM-DD`"
+                  },
+                  "intervals": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "from": {
+                          "type": "string",
+                          "pattern": "(\\d\\d):(\\d\\d)",
+                          "description": "Format: `\"hh:mm\"`"
+                        },
+                        "to": {
+                          "type": "string",
+                          "pattern": "(\\d\\d):(\\d\\d)",
+                          "description": "Format: `\"hh:mm\"`"
+                        }
+                      },
+                      "title": "SharesPostRequestBodyContentApplicationJsonSchemaAvailabilityRuleRulesItemsIntervalsItems"
+                    }
+                  }
+                },
+                "title": "SharesPostRequestBodyContentApplicationJsonSchemaAvailabilityRuleRulesItems"
+              },
+              "description": "are required when an availability rule is provided"
+            },
+            "timezone": {
+              "type": "string",
+              "description": "is required when an availability rule is provided"
+            }
+          },
+          "title": "SharesPostRequestBodyContentApplicationJsonSchemaAvailabilityRule"
+        }
+      },
+      "required": [
+        "event_type"
+      ],
+      "additionalProperties": false
+    },
+    "bodyRequired": true,
+    "paginated": false,
+    "scope": [
+      "shares:write"
+    ],
+    "upstreamOperationId": "shares_create-share"
+  },
+  {
+    "name": "get_current_user",
+    "title": "Get current user",
+    "description": "Get current user. Reads Calendly data. Required scopes: users:read.",
+    "method": "GET",
+    "path": "/users/me",
+    "group": "users",
+    "risk": "read",
+    "params": [],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "users:read"
+    ],
+    "upstreamOperationId": "users_get-current-user"
+  },
+  {
+    "name": "get_user",
+    "title": "Get user",
+    "description": "Get user. Reads Calendly data. Required scopes: users:read.",
+    "method": "GET",
+    "path": "/users/{uuid}",
+    "group": "users",
+    "risk": "read",
+    "params": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "description": "User unique identifier, or the constant \"me\" to reference the caller",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "description": "User unique identifier, or the constant \"me\" to reference the caller",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "users:read"
+    ],
+    "upstreamOperationId": "users_get-user"
+  },
+  {
+    "name": "create_webhook",
+    "title": "Create Webhook Subscription",
+    "description": "Create Webhook Subscription. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: scheduled_events:read, event_types:read, meeting_recaps:read, routing_forms:read, contacts:read, webhooks:write.",
+    "method": "POST",
+    "path": "/webhook_subscriptions",
+    "group": "webhooks",
+    "risk": "destructive",
+    "params": [],
+    "bodySchema": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "The URL where you want to receive POST requests for events you are subscribed to."
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "invitee.canceled",
+              "invitee.created",
+              "invitee_no_show.created",
+              "invitee_no_show.deleted",
+              "meeting_recap.created",
+              "meeting_recap.updated",
+              "meeting_recap.deleted",
+              "routing_form_submission.created",
+              "contact.created",
+              "contact.updated",
+              "contact.deleted",
+              "event_type.created",
+              "event_type.updated",
+              "event_type.deleted"
+            ],
+            "title": "WebhookSubscriptionsPostRequestBodyContentApplicationJsonSchemaEventsItems"
+          },
+          "description": "List of user events to subscribe to.",
+          "minItems": 1
+        },
+        "organization": {
+          "type": "string",
+          "format": "uri",
+          "description": "The unique reference to the organization that the webhook will be tied to."
+        },
+        "user": {
+          "type": "string",
+          "format": "uri",
+          "description": "The unique reference to the user that the webhook will be tied to."
+        },
+        "group": {
+          "type": "string",
+          "format": "uri",
+          "description": "The unique reference to the group that the webhook will be tied to."
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "organization",
+            "user",
+            "group"
+          ],
+          "description": "Indicates whether the webhook subscription scope is `organization`, `user`, or `group`",
+          "title": "WebhookSubscriptionsPostRequestBodyContentApplicationJsonSchemaScope"
+        },
+        "signing_key": {
+          "type": "string",
+          "description": "Optional secret key shared between your application and Calendly. See https://developer.calendly.com/api-docs/overview/webhooks/webhook-signatures for additional information."
+        }
+      },
+      "required": [
+        "url",
+        "events",
+        "organization",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "bodyRequired": true,
+    "paginated": false,
+    "scope": [
+      "scheduled_events:read",
+      "event_types:read",
+      "meeting_recaps:read",
+      "routing_forms:read",
+      "contacts:read",
+      "webhooks:write"
+    ],
+    "upstreamOperationId": "webhooks_create-webhook-subscription"
+  },
+  {
+    "name": "list_webhooks",
+    "title": "List Webhook Subscriptions",
+    "description": "List Webhook Subscriptions. Reads Calendly data. Supports bounded opaque page_token retrieval. Required scopes: webhooks:read.",
+    "method": "GET",
+    "path": "/webhook_subscriptions",
+    "group": "webhooks",
+    "risk": "read",
+    "params": [
+      {
+        "name": "organization",
+        "in": "query",
+        "description": "The given organization that owns the subscriptions being returned. This field is always required.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "The given organization that owns the subscriptions being returned. This field is always required."
+        },
+        "key": "organization"
+      },
+      {
+        "name": "user",
+        "in": "query",
+        "description": "Indicates if the results should be filtered by user. This parameter is only required if the `scope` parameter is set to `user`.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Indicates if the results should be filtered by user. This parameter is only required if the `scope` parameter is set to `user`."
+        },
+        "key": "user"
+      },
+      {
+        "name": "group",
+        "in": "query",
+        "description": "Indicates if the results should be filtered by group. This parameter is only required if the `scope` parameter is set to `group`.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "Indicates if the results should be filtered by group. This parameter is only required if the `scope` parameter is set to `group`."
+        },
+        "key": "group"
+      },
+      {
+        "name": "page_token",
+        "in": "query",
+        "description": "The token to pass to get the next or previous portion of the collection",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "The token to pass to get the next or previous portion of the collection"
+        },
+        "key": "page_token"
+      },
+      {
+        "name": "count",
+        "in": "query",
+        "description": "The number of rows to return",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20,
+          "description": "The number of rows to return"
+        },
+        "key": "count"
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "description": "Order results by the specified field and direction. Accepts comma-separated list of {field}:{direction} values.\nSupported fields are: created_at.\nSort direction is specified as: asc, desc.",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "description": "Order results by the specified field and direction. Accepts comma-separated list of {field}:{direction} values.\nSupported fields are: created_at.\nSort direction is specified as: asc, desc."
+        },
+        "key": "sort"
+      },
+      {
+        "name": "scope",
+        "in": "query",
+        "description": "Filter the list by organization, user, or group",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "organization",
+            "user",
+            "group"
+          ],
+          "title": "WebhookSubscriptionsGetParametersScope",
+          "description": "Filter the list by organization, user, or group"
+        },
+        "key": "scope"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": true,
+    "scope": [
+      "webhooks:read"
+    ],
+    "upstreamOperationId": "webhooks_list-webhook-subscriptions"
+  },
+  {
+    "name": "delete_webhook",
+    "title": "Delete Webhook Subscription",
+    "description": "Delete Webhook Subscription. Changes Calendly state and requires confirm=true for the specific requested action. Required scopes: webhooks:write.",
+    "method": "DELETE",
+    "path": "/webhook_subscriptions/{webhook_uuid}",
+    "group": "webhooks",
+    "risk": "destructive",
+    "params": [
+      {
+        "name": "webhook_uuid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "webhook_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "webhooks:write"
+    ],
+    "upstreamOperationId": "webhooks_delete-webhook-subscription"
+  },
+  {
+    "name": "get_webhook",
+    "title": "Get Webhook Subscription",
+    "description": "Get Webhook Subscription. Reads Calendly data. Required scopes: webhooks:read.",
+    "method": "GET",
+    "path": "/webhook_subscriptions/{webhook_uuid}",
+    "group": "webhooks",
+    "risk": "read",
+    "params": [
+      {
+        "name": "webhook_uuid",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "key": "webhook_uuid"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "webhooks:read"
+    ],
+    "upstreamOperationId": "webhooks_get-webhook-subscription"
+  },
+  {
+    "name": "get_sample_webhook_data",
+    "title": "Get sample webhook data",
+    "description": "Get sample webhook data. Reads Calendly data. Required scopes: webhooks:read.",
+    "method": "GET",
+    "path": "/sample_webhook_data",
+    "group": "webhooks",
+    "risk": "read",
+    "params": [
+      {
+        "name": "event",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "invitee.created",
+            "invitee.canceled",
+            "invitee_no_show.created",
+            "invitee_no_show.deleted",
+            "routing_form_submission.created",
+            "event_type.created",
+            "event_type.deleted",
+            "event_type.updated",
+            "meeting_recap.created",
+            "meeting_recap.updated",
+            "meeting_recap.deleted",
+            "contact.created",
+            "contact.updated",
+            "contact.deleted"
+          ],
+          "title": "SampleWebhookDataGetParametersEvent"
+        },
+        "key": "event"
+      },
+      {
+        "name": "organization",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri"
+        },
+        "key": "organization"
+      },
+      {
+        "name": "user",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uri"
+        },
+        "key": "user"
+      },
+      {
+        "name": "scope",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "user",
+            "organization",
+            "group"
+          ],
+          "title": "SampleWebhookDataGetParametersScope"
+        },
+        "key": "scope"
+      },
+      {
+        "name": "group",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uri"
+        },
+        "key": "group"
+      }
+    ],
+    "bodySchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "bodyRequired": false,
+    "paginated": false,
+    "scope": [
+      "webhooks:read"
+    ],
+    "upstreamOperationId": "webhooks_get-sample-webhook-data"
+  }
+]

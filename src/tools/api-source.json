@@ -1,0 +1,23 @@
+{
+  "source": "https://developer.calendly.com/openapi/calendly-api.json",
+  "checked": "2026-10-02",
+  "apiVersion": "v2",
+  "documentVersion": "1.0.0",
+  "sha256": "d68272136a3d18ff1d32c0e6bca925b65124347290fd317d4460c4669942ab60",
+  "upstreamSha256": "52480baf88cac2dcf0e5c52943179a63d3a93247cf1f107493f92d02dae84bc9",
+  "operationCount": 65,
+  "snapshotRedactions": [
+    "All upstream example/examples fields are removed before saving; examples are not used for validation."
+  ],
+  "corrections": [
+    "REST routes follow the current OpenAPI, including /locations, /shares and /event_type_availability_schedules. The official MCP table shows different routes; no guessed table aliases are requested.",
+    "Conditional booking invitee name/first_name and valid email are enforced. Guest arrays are capped at 10.",
+    "Contact email/phone arrays are capped at 10; exactly one primary email is enforced when supplied.",
+    "No-show creation requires the documented invitee URI even though the exported schema omits required.",
+    "Webhook event enum includes event_type.created/updated/deleted from the endpoint description omitted by the exported enum. Subscription event/scope combinations are validated.",
+    "Native cursor paging preserves opaque page_token. No response next_page URL is followed; no invented offset is sent.",
+    "Future availability range checks use 31 days for event-type slots and 7 days for user busy times.",
+    "The upstream date-rule pattern escapes literal hyphens outside a character class; those two escapes are removed for Unicode-compatible JSON Schema regex validation.",
+    "All writes require explicit confirmation and have no automatic retries. OAuth refresh rotation uses owner-only atomic storage and a per-file cross-process lock."
+  ]
+}
