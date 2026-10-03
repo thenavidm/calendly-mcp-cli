@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+Use the native terminal capture at 1040 source pixels with lossless GIF optimization, displayed at 520 pixels, matching the Bluesky/Substack reference. Original assets remain available.
+
 ## 2.0.0 - 2026-10-02
 
 - Update to the current official API v2: 65 REST operations plus a local account helper; 66 tools, 44 reads and 22 confirmed writes.
