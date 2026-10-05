@@ -1,6 +1,6 @@
 {
   "name": "@thenavidm/calendly-mcp-cli",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Calendly API v2 MCP server and shared task CLI for scheduling, contacts, custom fields, Notetaker recaps, transcripts, availability, organizations and webhooks.",
   "type": "module",
   "main": "./dist/index.js",
@@ -23,7 +23,7 @@
     "sync:api": "node scripts/sync-openapi.mjs"
   },
   "dependencies": {
-    "@thenavidm/slipway": "^0.1.14",
+    "@thenavidm/slipway": "^0.1.17",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1"
   },

@@ -1391,10 +1391,10 @@ Current primary sources: [API reference](https://developer.calendly.com/api-docs
 
 | Component | Current baseline | Meaning |
 | --- | --- | --- |
-| Package / desktop manifest | 3.0.0 | Shared MCP/CLI, current API and guarded workflows |
+| Package / desktop manifest | 3.0.1 | Shared MCP/CLI, current API and guarded workflows |
 | Calendly service | API v2 | Fixed api.calendly.com, no /v2 URL prefix |
 | OpenAPI info.version | 1.0.0 | Document metadata, not service version |
-| Slipway | 0.1.14 | The MCP server and the CLI from one definition of each tool |
+| Slipway | 0.1.17 | The MCP server and the CLI from one definition of each tool |
 | MCP TypeScript SDK, through Slipway | 2.3.0 | The protocol and its transports |
 | Node | 22+ | CLI/manual MCP and compatible desktop runtime |
 | Legacy source | 1.0.0 / 38 declared tools | Manually assembled MCP-only implementation |
