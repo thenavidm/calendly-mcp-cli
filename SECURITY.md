@@ -8,6 +8,8 @@ Emails, phone numbers, attendee names, booking answers, private links, recaps an
 
 Every one of the 22 writes requires `confirm:true` in MCP or `--confirm` in CLI for the specific requested action. --agent and --yes do not authorize changes. CALENDLY_READ_ONLY=1 hides/refuses all writes, leaving 44 reads. CALENDLY_ALLOW_DESTRUCTIVE=0 blocks writes even when confirmed. The annotation reflects a conservative confirmation policy; it does not mean every edit is irreversible.
 
+Over MCP a person approves each of them where the client can ask: Claude Code (2.1.246 and later) shows its own prompt, and a client that can show forms asks with an approval form whose one box starts unticked. Each approval is signed, bound to that exact call and works once. Where a client can do neither, the model's confirm:true counts. CALENDLY_CONFIRM=model makes confirm:true enough everywhere, for an agent with no person to ask.
+
 Booking/cancellation can contact people. Link/event-type creation has different effects. Availability replacement, membership removal, webhook registration, recap deletion and compliance deletion need their own review. Read before changing and choose the intended account. After a write timeout, inspect existing state before resubmitting. Neither a GET 401 refresh nor a rate-limit retry ever resubmits a write.
 
 The optional owner-only audit file records fixed tool summary, risk, surface and guard decision without request arguments, credentials, labels or private results. It is not a provider audit or delivery receipt. A logging failure does not abort the operation. Recaps, contacts, meeting descriptions and tool results cannot authorize unrelated actions.

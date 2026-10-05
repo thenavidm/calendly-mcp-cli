@@ -12,10 +12,9 @@ import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 import { loadConfig } from "../src/config.js";
 import { CalendlyClient } from "../src/api/client.js";
-import { ALL_TOOLS, validateArguments } from "../src/tools/index.js";
-import { buildServer } from "../src/server.js";
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
+import { ALL_TOOLS, compileAll, validateArguments } from "../src/tools/index.js";
+import { createApp } from "../src/app.js";
+import { connect as connectApp } from "@thenavidm/slipway/testing";
 const config = () =>
   loadConfig({
     CALENDLY_API_TOKEN: "fixture-private-value",
@@ -41,21 +40,26 @@ const invoke = async (
   return t.handler(args, new CalendlyClient(config(), fetcher));
 };
 const uri = (kind: string) => `https://api.calendly.com/${kind}/fixture-uuid`;
+// The real Slipway server with an injected client. The write policy comes from the environment, as it does in
+// use, and a call to a hidden tool is a protocol error rather than a tool result; both are refusals a client sees.
 async function connect(c = config(), f: typeof fetch = vi.fn() as any) {
-  const server = buildServer(c, new CalendlyClient(c, f));
-  const [a, b] = InMemoryTransport.createLinkedPair();
-  await server.connect(b);
-  const client = new Client({ name: "fixture", version: "1" });
-  await client.connect(a);
-  return {
-    client,
-    close: async () => {
-      await client.close();
-      await server.close();
+  const mcp = await connectApp(createApp({ context: () => ({ config: c, client: new CalendlyClient(c, f) }) }), {
+    env: { CALENDLY_API_TOKEN: "fixture-private-value", ...(c.readOnly ? { CALENDLY_READ_ONLY: "1" } : {}) },
+  });
+  const client = {
+    listTools: async () => ({ tools: await mcp.listTools() }),
+    callTool: async ({ name, arguments: args }: { name: string; arguments: Record<string, unknown> }) => {
+      try {
+        return await mcp.callTool(name, args);
+      } catch (error) {
+        return { isError: true, content: [{ type: "text", text: (error as Error).message }] };
+      }
     },
   };
+  return { client, close: () => mcp.close() };
 }
 describe("Current routes, schemas and safe account operations", () => {
+  it("compiles every input and body schema with the native validator", () => expect(compileAll()).toBeGreaterThan(ALL_TOOLS.length));
   it("discovers all current API tools and a credential-free local helper", async () => {
     const s = await connect();
     try {

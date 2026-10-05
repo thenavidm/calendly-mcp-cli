@@ -12,4 +12,4 @@
 - Record true live account, desktop GUI and matched task/token evidence; keep unverified outcomes explicit.
 - Update programme/catalogue/open work. Follow the site's separate deploy instructions for pending terminal scenes.
 
-Codex-first validation: check current installed CLI help, local stdio registration and private environment forwarding. Claude Code benchmarks are deferred and are not a release prerequisite. Keep client-specific measurements labelled; never reuse Claude figures as Codex results.
+Codex-first validation: check current installed CLI help, local stdio registration and private environment forwarding. Measure Claude Code (every tool loaded, tool search, SKILL.md) and Codex (one task over MCP and the CLI, five runs each) against the last npm release, and publish the figures in README section 7. Keep client-specific measurements labelled; never reuse Claude figures as Codex results.

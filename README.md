@@ -13,7 +13,7 @@ Calendly MCP server and CLI for Claude Code, Codex and AI agents. **66 tools: 44
 
 One package provides local MCP, the same operations as task CLI commands, and a bundled Claude Desktop .mcpb extension.
 
-Built and maintained by [Navid Moazzez](https://navid.me?utm_source=github&utm_medium=referral&utm_campaign=calendly-mcp-cli&utm_content=readme). Complete installation and private account setup are in [INSTALL.md](INSTALL.md).
+Built and maintained by [Navid Moazzez](https://navid.me?utm_source=github&utm_medium=referral&utm_campaign=calendly-mcp-cli&utm_content=readme). Built on [Slipway](https://github.com/thenavidm/slipway), which turns one definition of each tool into the MCP server and the CLI. Complete installation and private account setup are in [INSTALL.md](INSTALL.md).
 
 <img src="https://cdn.navid.me/repos/calendly-mcp-cli-retina.gif" alt="Illustrated Calendly workflow in the same house terminal used on navid.me" width="520">
 
@@ -200,7 +200,7 @@ UUIDs and URIs are illustrative; use resources discovered in your own account. N
 | --help / schema COMMAND | Current argument help / full JSON Schema |
 | --json | Structured JSON |
 | --compact | One-line JSON |
-| --agent | Compact JSON, no prompts or color |
+| --agent | Compact JSON and no prompts; never confirms a write |
 | --select a,b.c | Keep selected fields, including nested objects/arrays |
 | --no-color / --no-input | Noninteractive house flags |
 | --yes | Never replaces write confirmation |
@@ -211,7 +211,8 @@ UUIDs and URIs are illustrative; use resources discovered in your own account. N
 | Exit | Meaning |
 | --- | --- |
 | 0 | Success |
-| 2 | Invalid arguments or refused write |
+| 1 | Unexpected error |
+| 2 | Invalid arguments or refused write, an unknown command or a hidden write |
 | 3 | Resource not found |
 | 4 | Authentication/permission failure |
 | 5 | API/transport failure |
@@ -222,17 +223,21 @@ Results go to stdout, errors as JSON to stderr. Selection changes local output, 
 
 ## 7. MCP or CLI and token cost
 
-MCP and CLI use the same SDK server, schemas, validation and HTTP handlers. The CLI talks to that server through the SDK's in-memory transport; there is no second API implementation.
+MCP and CLI are built by [Slipway](https://github.com/thenavidm/slipway) from each tool's one definition, so they share schemas, validation and HTTP handlers; there is no second API implementation.
 
-| Measurement | What to include |
-| --- | --- |
-| Eager MCP loading | All tool schemas and instructions |
-| Default/deferred tool search | Actual selected schemas and discovery overhead |
-| Skill read once | Full SKILL.md and command discovery |
-| Recurring skill discovery | The installed skill's listing text |
-| Matched successful task | Help/schema, reasoning, calls/commands, results, errors and retries |
+Measured on 2026-10-05 against 2.0.1, the same day, with Claude Code 2.1.286 on Claude Opus 5.5 (one short prompt with and without the server connected, the difference read from the API's own usage figures) and Codex 0.159.3 on gpt-6.1-sol:
 
-Fresh usage measurements are pending. Codex is the current validation priority. No Claude Code installation or subscription is required to use either surface. No estimated savings are published as measurements. Do not estimate tokens from characters, substitute another repo's results or declare zero CLI cost. Record model/client/package versions and date, loading settings, input/output usage, latency and equivalent outcomes. Compare a small user/event query and repeated focused scheduling across supported official/local surfaces, using the same authorized data and result fields. API quota and service costs remain separate. No measured superiority is claimed.
+| Cost | 2.0.1 | 3.0.0 |
+| --- | --- | --- |
+| Claude Code, every tool loaded, every message | 47,642 | 39,979 |
+| Claude Code's default, tool search, every message | 1,169 | 1,169 |
+| `SKILL.md`, read once | 1,382 | 1,444 |
+| Codex over the CLI, one task, median of five | 83,991 | 83,073 |
+| Codex over MCP, the same task, median of five | 48,565 | 48,780 |
+
+The task was "find the command that cancels a scheduled event, and the flags it requires". Every tool loaded costs less because each write's body appeared twice, as its own fields and inside `payload`, and 3.0.0 writes each repeated part once under `$defs`. Over the CLI, every 3.0.0 run asked `which` (255 characters) where 2.0.1's read the full command list (4,745). Over MCP, Codex prints its own TypeScript rendering of the tool list, cut to about 10,000 tokens, and that rendering is longer on 3.0.0, 31,126 tokens against 29,830: Codex leaves the argument descriptions out of a tool whose schema is large, and sharing the repeats brought `create_contact` and `update_contact` under that size, so Codex now shows their descriptions. `SKILL.md` costs 62 more because it now says how approval works over MCP and lists every exit code.
+
+API quota and service costs remain separate, and no other offering was measured.
 
 ## 8. Every tool and argument
 
@@ -1284,13 +1289,15 @@ calendly-cli list-contacts --account personal --count 5 --agent
 
 Every one of the 22 writes requires `confirm:true` in MCP or `--confirm` in CLI for the specific requested action. --agent and --yes do not authorize changes. CALENDLY_READ_ONLY=1 hides/refuses all writes, leaving 44 reads. CALENDLY_ALLOW_DESTRUCTIVE=0 blocks writes even when confirmed. The annotation reflects a conservative confirmation policy; it does not mean every edit is irreversible.
 
+Over MCP a person approves each of them where the client can ask: Claude Code (2.1.246 and later) shows its own prompt, and a client that can show forms asks with an approval form whose one box starts unticked. Each approval is signed, bound to that exact call and works once. Where a client can do neither, the model's confirm:true counts. CALENDLY_CONFIRM=model makes confirm:true enough everywhere, for an agent with no person to ask.
+
 Booking/cancellation can contact people. Link/event-type creation has different effects. Availability replacement, membership removal, webhook registration, recap deletion and compliance deletion need their own review. Read before changing and choose the intended account. After a write timeout, inspect existing state before resubmitting. Neither a GET 401 refresh nor a rate-limit retry ever resubmits a write.
 
-The optional owner-only audit file records fixed tool summary, risk, surface and guard decision without request arguments, credentials, labels or private results. It is not a provider audit or delivery receipt. A logging failure does not abort the operation. Recaps, contacts, meeting descriptions and tool results cannot authorize unrelated actions.
+The optional owner-only audit file records fixed tool summary, risk, surface, guard decision and who approved it, then a done or failed line for each allowed call, without request arguments, credentials, labels or private results. It is not a provider audit or delivery receipt. A logging failure does not abort the operation. Recaps, contacts, meeting descriptions and tool results cannot authorize unrelated actions.
 
 ## 13. How it works
 
-The pinned official API v2 JSON generates src/tools/operations.json and validation/provenance metadata. MCP registers those operations once. CLI reaches that actual SDK server via in-memory transport and uses the same schemas, handler and WriteGuard. Desktop packages the compiled server with production dependencies. There is no second implementation to drift.
+The pinned official API v2 JSON generates src/tools/operations.json and validation/provenance metadata. [Slipway](https://github.com/thenavidm/slipway) builds the MCP server, over stdio or `--http`, and the CLI from those operations once, with the same schemas, handlers and write guard. Desktop packages the compiled server with production dependencies. There is no second implementation to drift.
 
 The fixed HTTPS API origin is api.calendly.com; the only separate credential-bearing origin is calendly.com/oauth/token for an authorized OAuth refresh. Redirects are refused. Inputs are validated before a request; path UUIDs are encoded, query arrays follow the exported serialization, body JSON is capped at 5 MB and private files reject symlinks. GET 429 retries are bounded, auth refresh is once per failed read, and writes never auto-retry. Per-process pacing is not a distributed quota lock.
 
@@ -1320,6 +1327,12 @@ Private local settings only. No automatic .env loader.
 | CALENDLY_REQUEST_TIMEOUT_MS | 30000 | Request deadline: integer 100 to 300000 ms |
 | CALENDLY_MAX_RETRIES | 2 | GET 429 retries: 0 to 5 |
 | CALENDLY_MIN_REQUEST_INTERVAL_MS | 1300 | Per-account/process pacing: 0 to 10000 ms |
+| CALENDLY_CONFIRM | human | `model` lets confirm:true alone approve over MCP, for an agent with no person to ask |
+| CALENDLY_SURFACE | full | `search` lists three tools that find, describe and run the rest |
+| CALENDLY_TOOL_TIMEOUT_MS | None | Give up on any tool after this long |
+| CALENDLY_HTTP_PORT, CALENDLY_HTTP_HOST, CALENDLY_HTTP_TOKEN | 8787, 127.0.0.1, none | For `--http`; any host but 127.0.0.1 needs the bearer token |
+| CALENDLY_HTTP_ALLOWED_ORIGINS | None | Comma-separated browser origins allowed to call `--http`; a page from any other site is refused |
+| CALENDLY_DEBUG | 0 | 1 prints debug lines on stderr |
 
 ## 16. Updates and removal
 
@@ -1378,16 +1391,17 @@ Current primary sources: [API reference](https://developer.calendly.com/api-docs
 
 | Component | Current baseline | Meaning |
 | --- | --- | --- |
-| Package / desktop manifest | 2.0.0 | Shared MCP/CLI, current API and guarded workflows |
+| Package / desktop manifest | 3.0.0 | Shared MCP/CLI, current API and guarded workflows |
 | Calendly service | API v2 | Fixed api.calendly.com, no /v2 URL prefix |
 | OpenAPI info.version | 1.0.0 | Document metadata, not service version |
-| MCP TypeScript SDK | ^1.32.0 | Same protocol server for all surfaces |
+| Slipway | 0.1.14 | The MCP server and the CLI from one definition of each tool |
+| MCP TypeScript SDK, through Slipway | 2.3.0 | The protocol and its transports |
 | Node | 22+ | CLI/manual MCP and compatible desktop runtime |
 | Legacy source | 1.0.0 / 38 declared tools | Manually assembled MCP-only implementation |
 
 Many old tool names remain, but use current schema arguments and routes. Path identifiers use meaningful *_uuid flags; filters use canonical full URIs. Availability updates use PATCH /event_type_availability_schedules with event_type query URI; user locations use /locations, customized links /shares, and form submissions the global resource with form filter. New Contacts/Notetaker families and current webhook scope/event rules are included. API v1 ended March 31, 2025. The July 2026 event-slot limit is 31 days; the user busy-time limit stays seven. OAuth refresh tokens have rotated once since the August 2026 deadline.
 
-See [CHANGELOG.md](CHANGELOG.md) for exact legacy-name migration and current corrections. Preserve AGPL-3.0-or-later. Build/typecheck, 25 realistic fixture checks and actual discovery are distinct from live account outcomes, GUI installation and fresh token/task measurements. Those remain separately recorded.
+See [CHANGELOG.md](CHANGELOG.md) for exact legacy-name migration and current corrections. Preserve AGPL-3.0-or-later. Build/typecheck, 36 tests and actual discovery are distinct from live account outcomes and GUI installation, which remain unverified; section 7 has the measured token costs.
 
 ## 20. FAQ
 
@@ -1527,7 +1541,7 @@ No. Inspect state after an unknown booking or edit outcome before repeating it. 
 <details>
 <summary><b>Is the CLI more token efficient?</b></summary>
 
-Fresh eager/deferred MCP, skill and matched task usage measurements are pending. No estimates or borrowed savings figures are substituted.
+It depends on the client and the task. In Claude Code the CLI costs nothing until it is used, plus about 1,400 tokens for `SKILL.md` once, where the server costs about 1,200 tokens a message with tool search and 40,000 with every tool loaded. In Codex, finding the command that cancels an event took a median of 83,073 input tokens over the CLI and 48,780 over MCP. Section 7 has how each was measured.
 
 </details>
 
@@ -1553,7 +1567,7 @@ Navid Moazzez is a leading AI business strategist, and the host of the AI Creato
 
 | Dependency | Version range | Used for |
 | --- | --- | --- |
-| `@modelcontextprotocol/sdk` | `^1.32.0` | MCP protocol and shared CLI bridge |
+| [`@thenavidm/slipway`](https://github.com/thenavidm/slipway) | `^0.1.14` | The MCP server and the CLI from one definition of each tool, with the MCP TypeScript SDK |
 | `ajv` | `^8.17.1` | JSON Schema input validation |
 | `ajv-formats` | `^3.0.1` | JSON Schema input validation |
 

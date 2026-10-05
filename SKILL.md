@@ -15,7 +15,7 @@ Run calendly-cli --version. STOP account work if unavailable; install with the m
 
 ## Discover current commands
 
-Use calendly-cli tools, COMMAND --help and schema COMMAND. Scheduling, availability, contacts/custom fields, Notetaker, organization/groups, routing, links/shares and webhook families share the exact MCP handlers. Every write is marked and requires --confirm for the user-requested action. Do not copy old API paths or bare UUIDs into URI filters.
+Use calendly-cli tools, COMMAND --help and schema COMMAND. Scheduling, availability, contacts/custom fields, Notetaker, organization/groups, routing, links/shares and webhook families share the exact MCP handlers. Every write is marked and requires --confirm for the user-requested action. Over MCP the person approves each in the client's own prompt or form; confirm:true counts only where the client cannot ask. Do not copy old API paths or bare UUIDs into URI filters.
 
 ## Agent mode and routing
 
@@ -38,7 +38,8 @@ list_accounts shows labels only. --account selects credentials, not organization
 | Exit | Meaning |
 | --- | --- |
 | 0 | Success |
-| 2 | Invalid usage or refused write |
+| 1 | Unexpected error |
+| 2 | Invalid usage or refused write, an unknown command or a hidden write |
 | 3 | Not found |
 | 4 | Authentication/permission failure |
 | 5 | API/transport failure |

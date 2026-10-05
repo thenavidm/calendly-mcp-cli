@@ -15,17 +15,9 @@ Checked October 2, 2026. The official supported-tools table lists 34 account ope
 No dedicated Calendly-published task CLI was identified in the reviewed official developer pages. A community CLI does exist, so we do not claim the CLI category is empty. Community scope observations are documentation/source reviews, not competitor handshakes or live booking tests. See [COMPARISON.md](COMPARISON.md) for evidence scope and the pending matched task comparison.
 
 
-MCP and CLI use the same SDK server, schemas, validation and HTTP handlers. The CLI talks to that server through the SDK's in-memory transport; there is no second API implementation.
+MCP and CLI are built by [Slipway](https://github.com/thenavidm/slipway) from each tool's one definition, so they share schemas, validation and HTTP handlers; there is no second API implementation.
 
-| Measurement | What to include |
-| --- | --- |
-| Eager MCP loading | All tool schemas and instructions |
-| Default/deferred tool search | Actual selected schemas and discovery overhead |
-| Skill read once | Full SKILL.md and command discovery |
-| Recurring skill discovery | The installed skill's listing text |
-| Matched successful task | Help/schema, reasoning, calls/commands, results, errors and retries |
-
-Fresh usage measurements are pending. Codex is the current measurement priority; neither interface requires Claude Code. Do not estimate tokens from characters, substitute another repo's results or declare zero CLI cost. Record model/client/package versions and date, loading settings, input/output usage, latency and equivalent outcomes. Compare a small user/event query and repeated focused scheduling across supported official/local surfaces, using the same authorized data and result fields. API quota and service costs remain separate. No measured superiority is claimed.
+README section 7 has this package's own costs, measured in Claude Code and Codex against 2.0.1 on 2026-10-05. Do not estimate tokens from characters or substitute another repo's results; no other offering was measured, and API quota and service costs remain separate.
 
 
 
